@@ -23,7 +23,7 @@ public class UserRegisterDto {
                 .hashPassword(password)
                 .createdAt(new Date())
                 .userRole(UserRole.USER)
-                .userStatus(UserStatus.ACTIVE)
+                .userStatus(UserStatus.NOT_ACTIVATED)
                 .build();
     }
 }
