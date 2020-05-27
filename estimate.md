@@ -1,6 +1,6 @@
 ### Stage 1 (12):
-- Spring configuration (8+)
-- DB configuration (4)
+~~- Spring configuration (8+)~~ (20)
+~~- DB configuration (4)~~ (1)
 
 ### Stage 2 (40):
 - JWT configuration (8+)
