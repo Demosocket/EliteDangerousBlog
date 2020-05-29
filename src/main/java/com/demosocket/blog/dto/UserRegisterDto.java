@@ -2,7 +2,6 @@ package com.demosocket.blog.dto;
 
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.UserRole;
-import com.demosocket.blog.model.UserStatus;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +14,7 @@ public class UserRegisterDto {
     private String email;
     private String password;
 
-    public User toUser() {
+    public User toEntity() {
         return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
@@ -23,7 +22,7 @@ public class UserRegisterDto {
                 .hashPassword(password)
                 .createdAt(new Date())
                 .userRole(UserRole.USER)
-                .userStatus(UserStatus.NOT_ACTIVATED)
+                .enabled(false)
                 .build();
     }
 }

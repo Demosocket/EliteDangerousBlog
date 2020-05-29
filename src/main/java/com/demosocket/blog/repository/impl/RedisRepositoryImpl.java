@@ -11,7 +11,7 @@ import java.util.Map;
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
 
-    private static final String KEY = "TOKEN";
+    private static final String KEY = "CONFIRM_EMAIL";
 
     private final RedisTemplate<String, String> redisTemplate;
     private HashOperations<String, String, String> hashOperations;
@@ -21,7 +21,7 @@ public class RedisRepositoryImpl implements RedisRepository {
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         hashOperations = redisTemplate.opsForHash();
     }
 

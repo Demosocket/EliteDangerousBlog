@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: EliteDangerousBlog
+  redis:
+    url: redis://localhost:6379

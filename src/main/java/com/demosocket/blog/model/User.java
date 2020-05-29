@@ -1,19 +1,19 @@
 package com.demosocket.blog.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "users")
 public class User {
 
@@ -42,7 +42,6 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 
-    @Column(name = "user_status")
-    @Enumerated(value = EnumType.STRING)
-    private UserStatus userStatus;
+    @Column(name = "enabled")
+    private boolean enabled;
 }
