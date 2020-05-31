@@ -2,5 +2,5 @@ package com.demosocket.blog.service;
 
 public interface EmailService {
 
-    void sendRegistrationEmail(String email, String token);
+    void sendEmail(String email, String url, String token);
 }

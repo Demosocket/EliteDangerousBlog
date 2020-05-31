@@ -1,17 +1,20 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.RegistrationHashCode;
 import com.demosocket.blog.dto.UserRegisterDto;
+import com.demosocket.blog.dto.UserResetPasswordDto;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.repository.RedisRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.service.EmailService;
 import com.demosocket.blog.service.UserService;
+import com.demosocket.blog.utils.RestoreCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,6 +35,11 @@ public class UserServiceImpl implements UserService {
         this.redisRepository = redisRepository;
     }
 
+    public static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
+    public static final String URL_RESTORE_PASSWORD = "";
+    public static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
+    public static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
+
     @Override
     public void registerNewUser(UserRegisterDto userRegisterDto) {
 //        setHashPassword before saving in db
@@ -43,32 +51,57 @@ public class UserServiceImpl implements UserService {
     @Override
     public void activateUser(String email) {
 //        save registrationHashCode in redisRepository and send email
-        RegistrationHashCode registrationHashCode = new RegistrationHashCode(email);
-        emailService.sendRegistrationEmail(email, registrationHashCode.getRegistrationHash());
-        redisRepository.save(registrationHashCode);
+        String code = UUID.randomUUID().toString();
+        redisRepository.saveCode(REDIS_KEY_FOR_HASH_CODE, email, code);
+        emailService.sendEmail(email, URL_CONFIRM_REGISTRATION, code);
     }
 
     @Override
     public void confirmEmail(String registrationHashCode) {
-        RegistrationHashCode registrationHashCodeFromDb = null;
-//        find all hash_codes in redisDb
-        Map<String, RegistrationHashCode> mapOfRegistrationHashCodes = redisRepository.findAllRegistrationHashCodes();
-        for (Map.Entry<String, RegistrationHashCode> entry : mapOfRegistrationHashCodes.entrySet()) {
-            if (entry.getValue().getRegistrationHash().equals(registrationHashCode)) {
-                registrationHashCodeFromDb = entry.getValue();
-            }
-        }
+        Optional<Object> email = redisRepository.findAllCodes(REDIS_KEY_FOR_HASH_CODE).entrySet()
+                .stream()
+                .filter(entry -> registrationHashCode.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst();
 //        check if hash_code is valid
-        if (registrationHashCodeFromDb != null && registrationHashCodeFromDb.checkExpiryDate()) {
+        if (email.isPresent()) {
 //            activate user
-            User notActiveUser = userRepository.findByEmail(registrationHashCodeFromDb.getEmail());
+            User notActiveUser = userRepository.findByEmail(email.get().toString());
             notActiveUser.setEnabled(true);
             userRepository.save(notActiveUser);
 //            delete data from redisDb
-            redisRepository.delete(registrationHashCodeFromDb.getEmail());
+            redisRepository.deleteCode(REDIS_KEY_FOR_HASH_CODE, email.get().toString());
         } else {
-//            do something here - we don't send a response for client..
-            System.out.println("Time is out, you should generate new code");
+//            do something here when time your hash_code is out
+            System.out.println("Hash_code is gone...");
+        }
+    }
+
+    @Override
+    public void sendRestoreEmail(String email) {
+        String code = RestoreCodeGenerator.randomString();
+        redisRepository.saveCode(REDIS_KEY_FOR_RESTORE_CODE, email, code);
+        emailService.sendEmail(email, URL_RESTORE_PASSWORD, code);
+    }
+
+    @Override
+    public void resetPassword(UserResetPasswordDto userResetPasswordDto) {
+        Optional<Object> email = redisRepository.findAllCodes(REDIS_KEY_FOR_RESTORE_CODE).entrySet()
+                .stream()
+                .filter(entry -> userResetPasswordDto.getCode().equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst();
+//        check if code is valid
+        if (email.isPresent()) {
+//            reset password for user
+            User userWithOldPassword = userRepository.findByEmail(email.get().toString());
+            userWithOldPassword.setHashPassword(passwordEncoder.encode(userResetPasswordDto.getPassword()));
+            userRepository.save(userWithOldPassword);
+//            delete data from redisDb
+            redisRepository.deleteCode(REDIS_KEY_FOR_RESTORE_CODE, email.get().toString());
+        } else {
+//            do something here when time your code is out
+            System.out.println("Code do not found...");
         }
     }
 

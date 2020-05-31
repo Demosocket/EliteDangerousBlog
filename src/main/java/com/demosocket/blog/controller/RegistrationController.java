@@ -2,11 +2,11 @@ package com.demosocket.blog.controller;
 
 import com.demosocket.blog.dto.UserEmailDto;
 import com.demosocket.blog.dto.UserRegisterDto;
+import com.demosocket.blog.dto.UserResetPasswordDto;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ public class RegistrationController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/sign_up", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserRegisterDto userRegisterDto){
         User userFromDb = userService.findByEmail(userRegisterDto.getEmail());
         if (userFromDb != null) {
@@ -32,7 +32,7 @@ public class RegistrationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/send_again", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/send_again")
     public ResponseEntity<?> sendAgain(@RequestBody UserEmailDto userEmailDto){
         User userFromDb = userService.findByEmail(userEmailDto.getEmail());
         if (userFromDb == null || userFromDb.isEnabled()) {
@@ -46,6 +46,20 @@ public class RegistrationController {
     @GetMapping(value = "/confirm/{hash_code}")
     public ResponseEntity<?> confirmEmail(@PathVariable(name = "hash_code") String registrationHashCode) {
         userService.confirmEmail(registrationHashCode);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot_password")
+    public ResponseEntity<?> forgotPassword(@RequestBody UserEmailDto userEmailDto){
+        userService.sendRestoreEmail(userEmailDto.getEmail());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<?> forgotPassword(@RequestBody UserResetPasswordDto userResetPasswordDto){
+        userService.resetPassword(userResetPasswordDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

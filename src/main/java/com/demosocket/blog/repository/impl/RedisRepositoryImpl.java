@@ -1,43 +1,34 @@
 package com.demosocket.blog.repository.impl;
 
-import com.demosocket.blog.model.RegistrationHashCode;
 import com.demosocket.blog.repository.RedisRepository;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
 
-    private static final String KEY = "CONFIRM_EMAIL";
+    private final RedisTemplate<String, String> redisTemplate;
 
-    private final RedisTemplate<String, RegistrationHashCode> redisTemplate;
-    private HashOperations<String, String, RegistrationHashCode> hashOperations;
-
-    public RedisRepositoryImpl(RedisTemplate<String, RegistrationHashCode> redisTemplate) {
+    public RedisRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-    @PostConstruct
-    private void init() {
-        hashOperations = redisTemplate.opsForHash();
+    @Override
+    public void saveCode(String key, String email, String code) {
+        redisTemplate.opsForHash().put(key, email, code);
+        redisTemplate.expire(key, 1, TimeUnit.DAYS);
     }
 
     @Override
-    public void save(RegistrationHashCode registrationHashCode) {
-        hashOperations.put(KEY, registrationHashCode.getEmail(), registrationHashCode);
+    public void deleteCode(String key, String email) {
+        redisTemplate.opsForHash().delete(key, email);
     }
 
     @Override
-    public void delete(String email) {
-        hashOperations.delete(KEY, email);
-    }
-
-    @Override
-    public Map<String, RegistrationHashCode> findAllRegistrationHashCodes() {
-        return hashOperations.entries(KEY);
+    public Map<Object, Object> findAllCodes(String key) {
+        return redisTemplate.opsForHash().entries(key);
     }
 }

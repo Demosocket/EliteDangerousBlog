@@ -21,11 +21,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendRegistrationEmail(String email, String token) {
+    public void sendEmail(String email, String url, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(EMAIL);
         message.setTo(email);
-        message.setText("http://localhost:8080/auth/confirm/" + token);
+        message.setText(url + token);
         try {
             javaMailSender.send(message);
         } catch (Exception e) {

@@ -1,12 +1,10 @@
 package com.demosocket.blog.repository;
 
-import com.demosocket.blog.model.RegistrationHashCode;
-
 import java.util.Map;
 
 public interface RedisRepository {
 
-    void save(RegistrationHashCode registrationHashCode);
-    void delete(String email);
-    Map<String, RegistrationHashCode> findAllRegistrationHashCodes();
+    void saveCode(String key, String email, String code);
+    void deleteCode(String key, String email);
+    Map<Object, Object> findAllCodes(String key);
 }

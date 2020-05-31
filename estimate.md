@@ -7,7 +7,7 @@
 - ~~Registration(4+)~~
 - ~~Confirm email (4+)~~
 - ~~Authorization (8+)~~
-- Recovery password (8+)
+- ~~Recovery password (8+)~~
 - Testing (8)
 
 ### Stage 3 (total: 16):
@@ -37,3 +37,4 @@
 - ~~Redis configuration (2)~~
 - ~~JWT configuration, Authorization, Confirm Email (12)~~
 - ~~Registration with hash_code (7)~~
+- ~~Recovery the password (5)~~

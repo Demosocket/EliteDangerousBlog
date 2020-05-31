@@ -1,6 +1,5 @@
 package com.demosocket.blog.config;
 
-import com.demosocket.blog.model.RegistrationHashCode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -15,8 +14,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, RegistrationHashCode> redisTemplate() {
-        final RedisTemplate<String, RegistrationHashCode> template = new RedisTemplate<>();
+    public RedisTemplate<String, String> redisTemplate() {
+        final RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         return template;
     }
