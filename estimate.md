@@ -8,7 +8,7 @@
 - ~~Confirm email (4+)~~
 - ~~Authorization (8+)~~
 - ~~Recovery password (8+)~~
-- Testing (8)
+- ~~Testing (8)~~
 
 ### Stage 3 (total: 16):
 - CRUD operations Articles (8)
@@ -31,10 +31,13 @@
 - ~~Spring configuration (1)~~
 - ~~DB configuration (1)~~
 
-### Stage 2 (total: ):
+### ~~Stage 2 (total: 33):~~
 - ~~Simple Registration (2)~~
 - ~~Send Email (1)~~
 - ~~Redis configuration (2)~~
 - ~~JWT configuration, Authorization, Confirm Email (12)~~
 - ~~Registration with hash_code (7)~~
 - ~~Recovery the password (5)~~
+- ~~Exception Handler (4)~~
+
+### Stage 3 (total: ):

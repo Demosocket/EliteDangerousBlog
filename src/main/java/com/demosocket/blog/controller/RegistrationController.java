@@ -3,6 +3,7 @@ package com.demosocket.blog.controller;
 import com.demosocket.blog.dto.UserEmailDto;
 import com.demosocket.blog.dto.UserRegisterDto;
 import com.demosocket.blog.dto.UserResetPasswordDto;
+import com.demosocket.blog.exception.UserAlreadyExist;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity<?> signUp(@RequestBody UserRegisterDto userRegisterDto){
+    public ResponseEntity<?> signUp(@RequestBody UserRegisterDto userRegisterDto) {
         User userFromDb = userService.findByEmail(userRegisterDto.getEmail());
         if (userFromDb != null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new UserAlreadyExist();
         }
         userService.registerNewUser(userRegisterDto);
 
@@ -33,10 +34,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/send_again")
-    public ResponseEntity<?> sendAgain(@RequestBody UserEmailDto userEmailDto){
+    public ResponseEntity<?> sendAgain(@RequestBody UserEmailDto userEmailDto) {
         User userFromDb = userService.findByEmail(userEmailDto.getEmail());
         if (userFromDb == null || userFromDb.isEnabled()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         userService.activateUser(userEmailDto.getEmail());
 
@@ -51,14 +52,14 @@ public class RegistrationController {
     }
 
     @PostMapping("/forgot_password")
-    public ResponseEntity<?> forgotPassword(@RequestBody UserEmailDto userEmailDto){
+    public ResponseEntity<?> forgotPassword(@RequestBody UserEmailDto userEmailDto) {
         userService.sendRestoreEmail(userEmailDto.getEmail());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<?> forgotPassword(@RequestBody UserResetPasswordDto userResetPasswordDto){
+    public ResponseEntity<?> resetPassword(@RequestBody UserResetPasswordDto userResetPasswordDto) {
         userService.resetPassword(userResetPasswordDto);
 
         return new ResponseEntity<>(HttpStatus.OK);

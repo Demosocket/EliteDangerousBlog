@@ -21,11 +21,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmail(String email, String url, String token) {
+    public void sendEmail(String email, String url, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(EMAIL);
         message.setTo(email);
-        message.setText(url + token);
+        message.setText(url + code);
         try {
             javaMailSender.send(message);
         } catch (Exception e) {
