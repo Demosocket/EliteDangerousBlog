@@ -18,29 +18,34 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final RedisRepository redisRepository;
     private final CodeGenerator codeGenerator;
+    private final UserRepository userRepository;
+    private final RedisRepository redisRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           BCryptPasswordEncoder passwordEncoder,
-                           EmailService emailService,
+    public UserServiceImpl(EmailService emailService,
+                           CodeGenerator codeGenerator,
+                           UserRepository userRepository,
                            RedisRepository redisRepository,
-                           CodeGenerator codeGenerator) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+                           BCryptPasswordEncoder passwordEncoder) {
         this.emailService = emailService;
-        this.redisRepository = redisRepository;
         this.codeGenerator = codeGenerator;
+        this.userRepository = userRepository;
+        this.redisRepository = redisRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
     public static final String URL_RESTORE_PASSWORD = "";
     public static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
     public static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
     @Override
     public void registerNewUser(UserRegisterDto userRegisterDto) {
@@ -56,6 +61,13 @@ public class UserServiceImpl implements UserService {
         String code = codeGenerator.randomHash();
         redisRepository.saveCode(REDIS_KEY_FOR_HASH_CODE, email, code);
         emailService.sendEmail(email, URL_CONFIRM_REGISTRATION, code);
+    }
+
+    @Override
+    public void sendRestoreEmail(String email) {
+        String code = codeGenerator.randomCode();
+        redisRepository.saveCode(REDIS_KEY_FOR_RESTORE_CODE, email, code);
+        emailService.sendEmail(email, URL_RESTORE_PASSWORD, code);
     }
 
     @Override
@@ -75,13 +87,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendRestoreEmail(String email) {
-        String code = codeGenerator.randomCode();
-        redisRepository.saveCode(REDIS_KEY_FOR_RESTORE_CODE, email, code);
-        emailService.sendEmail(email, URL_RESTORE_PASSWORD, code);
-    }
-
-    @Override
     public void resetPassword(UserResetPasswordDto userResetPasswordDto) {
         String email = (String) redisRepository.findAllCodes(REDIS_KEY_FOR_RESTORE_CODE).entrySet()
                 .stream()
@@ -95,10 +100,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userWithOldPassword);
 //        delete data from redisDb
         redisRepository.deleteCode(REDIS_KEY_FOR_RESTORE_CODE, email);
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 }

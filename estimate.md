@@ -11,7 +11,7 @@
 - ~~Testing (8)~~
 
 ### Stage 3 (total: 16):
-- CRUD operations Articles (8)
+- ~~CRUD operations Articles (8)~~
 - Security (4)
 - Testing (4)
 
@@ -41,3 +41,5 @@
 - ~~Exception Handler (4)~~
 
 ### Stage 3 (total: ):
+- ~~CRUD operations Articles with permits (10)~~
+- Pagination ()

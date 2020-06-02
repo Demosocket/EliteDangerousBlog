@@ -1,19 +1,19 @@
 package com.demosocket.blog.model;
 
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"articles"})
 @Table(name = "users")
 public class User {
 
@@ -34,8 +34,8 @@ public class User {
     private String hashPassword;
 
     @Column(name = "created_at")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
     @Column(name = "user_role")
@@ -44,4 +44,7 @@ public class User {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Article> articles;
 }
