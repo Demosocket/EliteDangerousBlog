@@ -1,18 +1,21 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.dto.ArticleEditDto;
-import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.model.Article;
-import com.demosocket.blog.security.jwt.JwtTokenUtil;
-import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.dto.ArticleNewDto;
+import com.demosocket.blog.dto.ArticleEditDto;
 import com.demosocket.blog.service.UserService;
+import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping("/articles")
@@ -42,15 +45,29 @@ public class ArticleController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Article>> getAllPublicArticles() {
-        return new ResponseEntity<>(articleService.findAllPublic(), HttpStatus.OK);
+    public ResponseEntity<Page<Article>> getAllPublicArticles(@RequestParam("skip") Integer page,
+                                                              @RequestParam("limit") Integer size,
+                                                              @RequestParam("q") String title,
+                                                              @RequestParam("author") Integer authorId,
+                                                              @RequestParam("sort") String field,
+                                                              @RequestParam("order") String order) {
+        Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
+        Page<Article> articlePage = articleService.findAllPublic(title, authorId, pageable);
+
+        return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Article>> getYourOwnArticles(HttpServletRequest request) {
+    public ResponseEntity<Page<Article>> getYourOwnArticles(HttpServletRequest request,
+                                                            @RequestParam("skip") Integer page,
+                                                            @RequestParam("limit") Integer size,
+                                                            @RequestParam("sort") String field,
+                                                            @RequestParam("order") String order) {
         final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
+        Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
+        Page<Article> articlePage = articleService.findAllByUser(userService.findByEmail(email), pageable);
 
-        return new ResponseEntity<>(articleService.findAllByUser(userService.findByEmail(email)), HttpStatus.OK);
+        return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

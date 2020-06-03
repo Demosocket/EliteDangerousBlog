@@ -8,7 +8,7 @@
 - ~~Confirm email (4+)~~
 - ~~Authorization (8+)~~
 - ~~Recovery password (8+)~~
-- ~~Testing (8)~~
+- Testing (8)
 
 ### Stage 3 (total: 16):
 - ~~CRUD operations Articles (8)~~
@@ -25,7 +25,6 @@
 
 ***
 # Process
-***
 
 ### ~~Stage 1 (total: 2):~~
 - ~~Spring configuration (1)~~
@@ -40,6 +39,8 @@
 - ~~Recovery the password (5)~~
 - ~~Exception Handler (4)~~
 
-### Stage 3 (total: ):
+### ~~Stage 3 (total: 14):~~
 - ~~CRUD operations Articles with permits (10)~~
-- Pagination ()
+- ~~Pagination (4)~~
+
+### Stage 4 (total: ):

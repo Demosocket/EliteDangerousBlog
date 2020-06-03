@@ -1,11 +1,11 @@
 package com.demosocket.blog.service.impl;
 
+import org.springframework.stereotype.Service;
 import com.demosocket.blog.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class EmailServiceImpl implements EmailService {

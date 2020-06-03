@@ -2,8 +2,8 @@ package com.demosocket.blog.utils;
 
 import org.springframework.stereotype.Component;
 
-import java.security.SecureRandom;
 import java.util.UUID;
+import java.security.SecureRandom;
 
 @Component
 public class CodeGenerator {

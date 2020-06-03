@@ -1,8 +1,8 @@
 package com.demosocket.blog.dto;
 
+import lombok.Data;
 import com.demosocket.blog.model.Article;
 import com.demosocket.blog.model.Status;
-import lombok.Data;
 
 import java.util.Date;
 
@@ -10,13 +10,13 @@ import java.util.Date;
 public class ArticleNewDto {
 
     private String title;
-    private String article;
+    private String text;
     private Status status;
 
     public Article toEntity() {
         return Article.builder()
                 .title(title)
-                .article(article)
+                .text(text)
                 .status(status)
                 .createdAt(new Date())
                 .updatedAt(new Date())

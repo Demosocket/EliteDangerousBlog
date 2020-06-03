@@ -1,33 +1,33 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.dto.JwtResponseDto;
 import com.demosocket.blog.dto.UserAuthDto;
+import com.demosocket.blog.dto.JwtResponseDto;
+import org.springframework.http.ResponseEntity;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthenticationController {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public AuthenticationController(JwtTokenUtil jwtTokenUtil,
                                     AuthenticationManager authenticationManager,
                                     @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.jwtTokenUtil = jwtTokenUtil;
-        this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping(value = "/authenticate")

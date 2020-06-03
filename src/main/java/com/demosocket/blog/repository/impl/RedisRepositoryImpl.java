@@ -1,8 +1,8 @@
 package com.demosocket.blog.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import com.demosocket.blog.repository.RedisRepository;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

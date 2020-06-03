@@ -1,7 +1,7 @@
 package com.demosocket.blog.model;
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,7 +26,7 @@ public class Article {
 
     @JsonProperty("text")
     @Column(name = "article")
-    private String article;
+    private String text;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
