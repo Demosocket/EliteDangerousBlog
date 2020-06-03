@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {""})
+@EqualsAndHashCode(exclude = {"article", "user"})
 @Table(name = "comments")
 public class Comment {
 

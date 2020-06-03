@@ -4,11 +4,14 @@ import com.demosocket.blog.model.Comment;
 import com.demosocket.blog.dto.CommentNewDto;
 import com.demosocket.blog.service.CommentService;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -33,8 +36,14 @@ public class CommentController {
     }
 
     @GetMapping("/{articleId}/comments")
-    public ResponseEntity<List<Comment>> allCommentsFromArticle(@PathVariable Integer articleId) {
-        List<Comment> commentList = commentService.findAllCommentsFromArticle(articleId);
+    public ResponseEntity<Page<Comment>> allCommentsFromArticle(@PathVariable Integer articleId,
+                                                                @RequestParam("skip") Integer page,
+                                                                @RequestParam("limit") Integer size,
+                                                                @RequestParam("author") Integer userId,
+                                                                @RequestParam("sort") String field,
+                                                                @RequestParam("order") String order) {
+        Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
+        Page<Comment> commentList = commentService.findAllCommentsFromArticle(articleId, userId, pageable);
         return new ResponseEntity<>(commentList, HttpStatus.OK);
     }
 

@@ -43,6 +43,9 @@
 - ~~CRUD operations Articles with permits (10)~~
 - ~~Pagination (4)~~
 
-### Stage 4 (total: ):
+### ~~Stage 4 (total: 6):~~
 - ~~CRUD operations Comments with permits (4)~~
+- ~~Comments pagination(2)~~
+
+### Stage 5 (total: ):
 -

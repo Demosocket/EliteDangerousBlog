@@ -46,11 +46,11 @@ public class ArticleController {
     public ResponseEntity<Page<Article>> getAllPublicArticles(@RequestParam("skip") Integer page,
                                                               @RequestParam("limit") Integer size,
                                                               @RequestParam("q") String title,
-                                                              @RequestParam("author") Integer authorId,
+                                                              @RequestParam("author") Integer userId,
                                                               @RequestParam("sort") String field,
                                                               @RequestParam("order") String order) {
         Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
-        Page<Article> articlePage = articleService.findAllPublic(title, authorId, pageable);
+        Page<Article> articlePage = articleService.findAllPublic(title, userId, pageable);
 
         return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }
