@@ -1,13 +1,13 @@
 package com.demosocket.blog.dto;
 
+import lombok.Data;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.UserRole;
-import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class UserRegisterDto {
+public class UserNewDto {
 
     private String firstName;
     private String lastName;

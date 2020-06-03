@@ -27,20 +27,34 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(ArticleNotFoundException.class)
     public ResponseEntity<?> handleArticleNotFound(final ArticleNotFoundException e, final WebRequest request) {
         final String bodyOfResponse = "Article with this id not found";
-        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(PermissionDeniedArticleAccessException.class)
     public ResponseEntity<?> handleArticleNotFound(final PermissionDeniedArticleAccessException e,
                                                    final WebRequest request) {
         final String bodyOfResponse = "You don't have permissions to do something with this article";
-        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(PermissionDeniedCommentAccessException.class)
+    public ResponseEntity<?> handleArticleNotFound(final PermissionDeniedCommentAccessException e,
+                                                   final WebRequest request) {
+        final String bodyOfResponse = "You don't have permissions to do something with this comment";
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFound(final UserNotFoundException e,
                                                    final WebRequest request) {
         final String bodyOfResponse = "User with this id not found";
-        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<?> handleCommentNotFound(final CommentNotFoundException e,
+                                                final WebRequest request) {
+        final String bodyOfResponse = "Comment with this id not found";
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 }

@@ -3,9 +3,9 @@ package com.demosocket.blog.model;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -47,4 +47,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Article> articles;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }

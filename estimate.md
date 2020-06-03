@@ -16,7 +16,7 @@
 - Testing (4)
 
 ### Stage 4 (total: 12):
-- CRUD operations Comments (8)
+- ~~CRUD operations Comments (8)~~
 - Testing (4)
 
 ### Stage 5 (total: 12):
@@ -44,3 +44,5 @@
 - ~~Pagination (4)~~
 
 ### Stage 4 (total: ):
+- ~~CRUD operations Comments with permits (4)~~
+-

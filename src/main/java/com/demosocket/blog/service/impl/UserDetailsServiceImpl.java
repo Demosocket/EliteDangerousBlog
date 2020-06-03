@@ -3,6 +3,7 @@ package com.demosocket.blog.service.impl;
 import org.springframework.stereotype.Service;
 import com.demosocket.blog.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
+import com.demosocket.blog.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.demosocket.blog.model.User user = userRepository.findByEmail(username);
+        com.demosocket.blog.model.User user = userRepository
+                .findByEmail(username).orElseThrow(UserNotFoundException::new);
         if (user == null) {
             throw new UsernameNotFoundException("User with email " + username + " not found");
         }

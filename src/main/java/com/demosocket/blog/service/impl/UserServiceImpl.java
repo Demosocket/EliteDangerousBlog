@@ -1,7 +1,7 @@
 package com.demosocket.blog.service.impl;
 
 import com.demosocket.blog.model.User;
-import com.demosocket.blog.dto.UserRegisterDto;
+import com.demosocket.blog.dto.UserNewDto;
 import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.utils.CodeGenerator;
 import com.demosocket.blog.service.EmailService;
@@ -9,6 +9,7 @@ import com.demosocket.blog.dto.UserResetPasswordDto;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.repository.RedisRepository;
 import com.demosocket.blog.exception.InvalidCodeException;
+import com.demosocket.blog.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,15 +45,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public void registerNewUser(UserRegisterDto userRegisterDto) {
+    public void registerNewUser(UserNewDto userNewDto) {
 //        setHashPassword before saving in db
-        userRegisterDto.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-        userRepository.save(userRegisterDto.toEntity());
-        activateUser(userRegisterDto.getEmail());
+        userNewDto.setPassword(passwordEncoder.encode(userNewDto.getPassword()));
+        userRepository.save(userNewDto.toEntity());
+        activateUser(userNewDto.getEmail());
     }
 
     @Override
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
                 .findFirst()
                 .orElseThrow(InvalidCodeException::new);
 //        activate user
-        User notActiveUser = userRepository.findByEmail(email);
+        User notActiveUser = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         notActiveUser.setEnabled(true);
         userRepository.save(notActiveUser);
 //        delete data from redisDb
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
                 .findFirst()
                 .orElseThrow(InvalidCodeException::new);
 //        reset password for user
-        User userWithOldPassword = userRepository.findByEmail(email);
+        User userWithOldPassword = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         userWithOldPassword.setHashPassword(passwordEncoder.encode(userResetPasswordDto.getPassword()));
         userRepository.save(userWithOldPassword);
 //        delete data from redisDb

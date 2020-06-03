@@ -3,6 +3,7 @@ package com.demosocket.blog.service.impl;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.Status;
 import com.demosocket.blog.model.Article;
+import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
 import com.demosocket.blog.service.ArticleService;
 import com.demosocket.blog.repository.UserRepository;
@@ -34,17 +35,13 @@ public class ArticleServiceImpl implements ArticleService {
         Page<Article> articlePage;
         if (userId > 0) {
             User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            if (!title.equals("all")) {
-                articlePage = articleRepository.findAllByStatusAndUserAndTitle(Status.PUBLIC, user, title, pageable);
-            } else {
-                articlePage = articleRepository.findAllByStatusAndUser(Status.PUBLIC, user, pageable);
-            }
+            articlePage = !title.equals("all")
+                    ? articleRepository.findAllByStatusAndUserAndTitle(Status.PUBLIC, user, title, pageable)
+                    : articleRepository.findAllByStatusAndUser(Status.PUBLIC, user, pageable);
         } else {
-            if (!title.equals("all")) {
-                articlePage = articleRepository.findAllByStatusAndTitle(Status.PUBLIC, title, pageable);
-            } else {
-                articlePage = articleRepository.findAllByStatus(Status.PUBLIC, pageable);
-            }
+            articlePage = !title.equals("all")
+                    ? articleRepository.findAllByStatusAndTitle(Status.PUBLIC, title, pageable)
+                    : articleRepository.findAllByStatus(Status.PUBLIC, pageable);
         }
         return articlePage;
     }
@@ -55,16 +52,19 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void saveArticle(Article article) {
+    public void saveArticle(ArticleNewDto articleNewDto, String email) {
+        Article article = articleNewDto.toEntity();
+        article.setUser(userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new));
         articleRepository.save(article);
     }
 
     @Override
     public void checkAndDeleteArticle(Integer id, String email) {
-        Article article = articleRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        User user = userRepository.findByEmail(email);
+        Article article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+//        check if user wrote this article
         if (article.getUser().equals(user)) {
-           articleRepository.delete(article);
+            articleRepository.delete(article);
         } else {
             throw new PermissionDeniedArticleAccessException();
         }
@@ -73,7 +73,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void checkAndEditArticle(Integer id, String email, ArticleEditDto articleEditDto) {
         Article article = articleRepository.findById(id).orElseThrow(ArticleNotFoundException::new);
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+//        check if user wrote this article
         if (article.getUser().equals(user)) {
             article.setTitle(articleEditDto.getTitle());
             article.setText(articleEditDto.getText());

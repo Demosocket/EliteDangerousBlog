@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 import javax.persistence.*;
 
 @Getter
@@ -14,24 +13,24 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"user"})
-@Table(name = "articles")
-public class Article {
+@EqualsAndHashCode(exclude = {""})
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title")
-    private String title;
+    @JsonProperty("message")
+    @Column(name = "text_message")
+    private String message;
 
-    @JsonProperty("text")
-    @Column(name = "article")
-    private String text;
-
-    @Column(name = "status")
-    @Enumerated(value = EnumType.STRING)
-    private Status status;
+    @JsonProperty("article_id")
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Article.class)
+    @JoinColumn(name = "article_id", referencedColumnName = "id")
+    private Article article;
 
     @JsonProperty("author_id")
     @JsonIdentityReference(alwaysAsId = true)
@@ -45,16 +44,4 @@ public class Article {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
-
-    @JsonProperty("updated_at")
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date updatedAt;
-
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-    private List<Comment> comments;
 }
-
-
-
