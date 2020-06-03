@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"articles"})
+@EqualsAndHashCode(exclude = {"articles", "comments"})
 @Table(name = "users")
 public class User {
 

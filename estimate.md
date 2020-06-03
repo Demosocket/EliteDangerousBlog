@@ -45,7 +45,8 @@
 
 ### ~~Stage 4 (total: 6):~~
 - ~~CRUD operations Comments with permits (4)~~
-- ~~Comments pagination(2)~~
+- ~~Comments pagination (2)~~
 
 ### Stage 5 (total: ):
+- ~~Counting Tags (2)~~
 -
