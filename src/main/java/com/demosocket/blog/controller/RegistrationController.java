@@ -1,15 +1,14 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.dto.UserEmailDto;
-import com.demosocket.blog.dto.UserNewDto;
-import com.demosocket.blog.dto.UserResetPasswordDto;
-import com.demosocket.blog.exception.UserAlreadyExist;
 import com.demosocket.blog.model.User;
+import com.demosocket.blog.dto.UserNewDto;
+import com.demosocket.blog.dto.UserEmailDto;
 import com.demosocket.blog.service.UserService;
+import com.demosocket.blog.dto.UserResetPasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,10 +23,6 @@ public class RegistrationController {
 
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserNewDto userNewDto) {
-        User userFromDb = userService.findByEmail(userNewDto.getEmail());
-        if (userFromDb != null) {
-            throw new UserAlreadyExist();
-        }
         userService.registerNewUser(userNewDto);
 
         return new ResponseEntity<>(HttpStatus.OK);

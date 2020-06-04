@@ -8,6 +8,7 @@ import com.demosocket.blog.service.EmailService;
 import com.demosocket.blog.dto.UserResetPasswordDto;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.repository.RedisRepository;
+import com.demosocket.blog.exception.UserAlreadyExist;
 import com.demosocket.blog.exception.InvalidCodeException;
 import com.demosocket.blog.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,6 +52,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerNewUser(UserNewDto userNewDto) {
+//        check if user already exist
+        Optional<User> userFromDb = userRepository.findByEmail(userNewDto.getEmail());
+        if (userFromDb.isPresent()) {
+            throw new UserAlreadyExist();
+        }
 //        setHashPassword before saving in db
         userNewDto.setPassword(passwordEncoder.encode(userNewDto.getPassword()));
         userRepository.save(userNewDto.toEntity());

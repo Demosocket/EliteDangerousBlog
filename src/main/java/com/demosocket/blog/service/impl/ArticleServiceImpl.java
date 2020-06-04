@@ -1,10 +1,12 @@
 package com.demosocket.blog.service.impl;
 
+import com.demosocket.blog.model.Tag;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.Status;
 import com.demosocket.blog.model.Article;
 import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
+import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.service.ArticleService;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.repository.ArticleRepository;
@@ -17,15 +19,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
 
     @Autowired
-    public ArticleServiceImpl(UserRepository userRepository, ArticleRepository articleRepository) {
+    public ArticleServiceImpl(TagRepository tagRepository, UserRepository userRepository, ArticleRepository articleRepository) {
+        this.tagRepository = tagRepository;
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
     }
@@ -55,6 +62,21 @@ public class ArticleServiceImpl implements ArticleService {
     public void saveArticle(ArticleNewDto articleNewDto, String email) {
         Article article = articleNewDto.toEntity();
         article.setUser(userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new));
+//        tags
+        Set<String> tags = articleNewDto.getTags();
+        Set<Tag> tagsForArticle = new HashSet<>();
+        for (String tag : tags) {
+            Optional<Tag> tagFromDb = tagRepository.findByName(tag);
+            if (!tagFromDb.isPresent()) {
+                Tag tagToDb = new Tag();
+                tagToDb.setName(tag);
+                tagRepository.save(tagToDb);
+                tagsForArticle.add(tagToDb);
+            } else {
+                tagsForArticle.add(tagFromDb.get());
+            }
+        }
+        article.setTags(tagsForArticle);
         articleRepository.save(article);
     }
 

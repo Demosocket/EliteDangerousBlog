@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaSpecificationExecutor<Status> {
 
@@ -19,4 +20,5 @@ public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaS
     Page<Article> findAllByStatus(Status status, Pageable pageable);
     Page<Article> findAllByUser(User user, Pageable pageable);
     List<Article> findAllByTags(Tag tag);
+//    Set<Article> findB(Tag tag);
 }
