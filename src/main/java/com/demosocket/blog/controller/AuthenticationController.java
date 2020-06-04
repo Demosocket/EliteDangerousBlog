@@ -3,6 +3,7 @@ package com.demosocket.blog.controller;
 import com.demosocket.blog.dto.UserAuthDto;
 import com.demosocket.blog.dto.JwtResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthenticationController {

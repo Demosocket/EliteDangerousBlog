@@ -49,4 +49,6 @@
 
 ### Stage 5 (total: ):
 - ~~Counting Tags (2)~~
+- ~~Add tags to new article (2)~~
+- ~~Add tags edited article (2)~~
 -

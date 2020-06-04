@@ -1,5 +1,6 @@
 package com.demosocket.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Set;
@@ -22,6 +23,7 @@ public class Tag {
     @Column(name = "tag_name")
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Article> articles;
 }

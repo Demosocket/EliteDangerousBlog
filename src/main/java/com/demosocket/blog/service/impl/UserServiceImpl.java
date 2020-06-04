@@ -21,6 +21,10 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    public static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
+    public static final String URL_RESTORE_PASSWORD = "";
+    public static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
+    public static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
     private final EmailService emailService;
     private final CodeGenerator codeGenerator;
     private final UserRepository userRepository;
@@ -39,11 +43,6 @@ public class UserServiceImpl implements UserService {
         this.redisRepository = redisRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
-    public static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
-    public static final String URL_RESTORE_PASSWORD = "";
-    public static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
-    public static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
 
     @Override
     public User findByEmail(String email) {

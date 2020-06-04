@@ -7,13 +7,13 @@ import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.service.ArticleService;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,7 +49,7 @@ public class ArticleController {
                                                               @RequestParam("author") Integer userId,
                                                               @RequestParam("sort") String field,
                                                               @RequestParam("order") String order) {
-        Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
         Page<Article> articlePage = articleService.findAllPublic(title, userId, pageable);
 
         return new ResponseEntity<>(articlePage, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class ArticleController {
                                                             @RequestParam("sort") String field,
                                                             @RequestParam("order") String order) {
         final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
-        Pageable pageable =  PageRequest.of(page, size, Sort.Direction.fromString(order), field);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
         Page<Article> articlePage = articleService.findAllByUser(userService.findByEmail(email), pageable);
 
         return new ResponseEntity<>(articlePage, HttpStatus.OK);
