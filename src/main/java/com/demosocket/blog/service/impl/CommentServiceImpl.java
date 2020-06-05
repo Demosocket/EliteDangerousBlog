@@ -65,8 +65,6 @@ public class CommentServiceImpl implements CommentService {
         Article article = articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        return (userId > 0)
-                ? commentRepository.findAllByUserAndArticle(user, article, pageable)
-                : commentRepository.findAllByArticle(article, pageable);
+        return commentRepository.findAllByUserAndArticle(user, article, pageable);
     }
 }

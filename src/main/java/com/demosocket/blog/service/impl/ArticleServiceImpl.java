@@ -7,21 +7,20 @@ import com.demosocket.blog.model.Article;
 import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
 import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.dto.SearchParametersDto;
 import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.repository.ArticleRepository;
+import com.demosocket.blog.exception.TagNotFoundException;
 import com.demosocket.blog.exception.UserNotFoundException;
 import com.demosocket.blog.exception.ArticleNotFoundException;
 import com.demosocket.blog.exception.PermissionDeniedArticleAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 
-import java.util.Set;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -40,19 +39,93 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<Article> findAllPublic(String title, Integer userId, Pageable pageable) {
-        Page<Article> articlePage;
-        if (userId > 0) {
-            User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            articlePage = !title.equals("all")
-                    ? articleRepository.findAllByStatusAndUserAndTitle(Status.PUBLIC, user, title, pageable)
-                    : articleRepository.findAllByStatusAndUser(Status.PUBLIC, user, pageable);
-        } else {
-            articlePage = !title.equals("all")
-                    ? articleRepository.findAllByStatusAndTitle(Status.PUBLIC, title, pageable)
-                    : articleRepository.findAllByStatus(Status.PUBLIC, pageable);
+    public Page<Article> findAllPublic(SearchParametersDto params) {
+
+        Set<Article> articleSet = new HashSet<>();
+//        if @RequestParam("tags") is 'null' then we should find with all tags
+        if (params.getTags() == null) {
+            params.setTags(tagRepository.findAll().stream().map(Tag::getName).collect(Collectors.toList()));
         }
-        return articlePage;
+
+        if (params.getUserId() != null) {
+//            if @RequestParam("tags") != 'null' then we should find by user
+            User user = userRepository.findById(params.getUserId()).orElseThrow(UserNotFoundException::new);
+            for (String tagName : params.getTags()) {
+                Tag tag = tagRepository.findByName(tagName).orElseThrow(TagNotFoundException::new);
+                if (params.getTitle() != null) {
+                    articleSet.addAll(articleRepository.findAllByStatusAndUserAndTitleAndTagsIsContaining(
+                            Status.PUBLIC, user, params.getTitle(), tag));
+                } else {
+                    articleSet.addAll(articleRepository.findAllByStatusAndUserAndTagsIsContaining(
+                            Status.PUBLIC, user, tag));
+                }
+            }
+        } else {
+//            else we don't have a user_id from @RequestParam
+            for (String tagName : params.getTags()) {
+                Tag tag = tagRepository.findByName(tagName).orElseThrow(TagNotFoundException::new);
+                if (params.getTitle() != null) {
+                    articleSet.addAll(articleRepository.findAllByStatusAndTitleAndTagsIsContaining(
+                            Status.PUBLIC, params.getTitle(), tag));
+                } else {
+                    articleSet.addAll(articleRepository.findAllByStatusAndTagsIsContaining(
+                            Status.PUBLIC, tag));
+                }
+            }
+        }
+//        pagination
+        int start = params.getPage() * params.getSize();
+        int end = Math.min((start + params.getSize()), articleSet.size());
+
+        List<Article> articleList = new ArrayList<>(articleSet);
+
+//        sort by 'field' with 'order'
+        switch (params.getSortField()) {
+            case "id":
+                articleList = params.getOrder().equals("asc")
+                        ? articleList.stream().sorted(Comparator.comparing(Article::getId))
+                            .collect(Collectors.toList())
+                        : articleList.stream().sorted(Comparator.comparing(Article::getId).reversed())
+                            .collect(Collectors.toList());
+                break;
+            case "title":
+                articleList = params.getOrder().equals("asc")
+                        ? articleList.stream().sorted(Comparator.comparing(Article::getTitle))
+                            .collect(Collectors.toList())
+                        : articleList.stream().sorted(Comparator.comparing(Article::getTitle).reversed())
+                            .collect(Collectors.toList());
+                break;
+            case "text":
+                articleList = params.getOrder().equals("asc")
+                        ? articleList.stream().sorted(Comparator.comparing(Article::getText))
+                            .collect(Collectors.toList())
+                        : articleList.stream().sorted(Comparator.comparing(Article::getText).reversed())
+                            .collect(Collectors.toList());
+                break;
+            case "created_at":
+                articleList = params.getOrder().equals("asc")
+                        ? articleList.stream().sorted(Comparator.comparing(Article::getCreatedAt))
+                            .collect(Collectors.toList())
+                        : articleList.stream().sorted(Comparator.comparing(Article::getCreatedAt).reversed())
+                            .collect(Collectors.toList());
+                break;
+            case "updated_at":
+                articleList = params.getOrder().equals("asc")
+                        ? articleList.stream().sorted(Comparator.comparing(Article::getUpdatedAt))
+                            .collect(Collectors.toList())
+                        : articleList.stream().sorted(Comparator.comparing(Article::getUpdatedAt).reversed())
+                            .collect(Collectors.toList());
+                break;
+        }
+//        copy the articleList into resultList by page
+        List<Article> resultList = new ArrayList<>();
+        if (start <= end) {
+            resultList = articleList.subList(start, end);
+        }
+//        'PageImpl' work with 'Pageable' but it's fiction
+        Pageable pageable = PageRequest.of(params.getPage(), params.getSize(),
+                Sort.Direction.fromString(params.getOrder()), params.getSortField());
+        return new PageImpl<>(resultList, pageable, articleList.size());
     }
 
     @Override

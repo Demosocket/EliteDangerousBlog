@@ -7,19 +7,18 @@ import com.demosocket.blog.model.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaSpecificationExecutor<Status> {
+public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
-    Page<Article> findAllByStatusAndUserAndTitle(Status status, User user, String title, Pageable pageable);
+    List<Article> findAllByStatusAndUserAndTitleAndTagsIsContaining(Status status, User user, String title, Tag tag);
 
-    Page<Article> findAllByStatusAndTitle(Status status, String title, Pageable pageable);
+    List<Article> findAllByStatusAndTitleAndTagsIsContaining(Status status, String title, Tag tag);
 
-    Page<Article> findAllByStatusAndUser(Status status, User user, Pageable pageable);
+    List<Article> findAllByStatusAndUserAndTagsIsContaining(Status status, User user, Tag tag);
 
-    Page<Article> findAllByStatus(Status status, Pageable pageable);
+    List<Article> findAllByStatusAndTagsIsContaining(Status status, Tag tag);
 
     Page<Article> findAllByUser(User user, Pageable pageable);
 

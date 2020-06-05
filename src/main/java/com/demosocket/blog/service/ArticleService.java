@@ -4,12 +4,13 @@ import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.Article;
 import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
+import com.demosocket.blog.dto.SearchParametersDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
 public interface ArticleService {
 
-    Page<Article> findAllPublic(String articleTitle, Integer userId, Pageable pageable);
+    Page<Article> findAllPublic(SearchParametersDto params);
 
     Page<Article> findAllByUser(User user, Pageable pageable);
 

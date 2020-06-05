@@ -5,16 +5,15 @@ import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
 import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.dto.SearchParametersDto;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -43,14 +42,26 @@ public class ArticleController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<Article>> getAllPublicArticles(@RequestParam("skip") Integer page,
+    public ResponseEntity<Page<Article>> getAllPublicArticles(@RequestParam(value = "tags", required = false)
+                                                                          List<String> tags,
+                                                              @RequestParam("skip") Integer page,
                                                               @RequestParam("limit") Integer size,
-                                                              @RequestParam("q") String title,
-                                                              @RequestParam("author") Integer userId,
+                                                              @RequestParam(value = "q", required = false)
+                                                                          String title,
+                                                              @RequestParam(value = "author", required = false)
+                                                                          Integer userId,
                                                               @RequestParam("sort") String field,
                                                               @RequestParam("order") String order) {
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
-        Page<Article> articlePage = articleService.findAllPublic(title, userId, pageable);
+        SearchParametersDto params = SearchParametersDto.builder()
+                .tags(tags)
+                .page(page)
+                .size(size)
+                .title(title)
+                .userId(userId)
+                .sortField(field)
+                .order(order)
+                .build();
+        Page<Article> articlePage = articleService.findAllPublic(params);
 
         return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }

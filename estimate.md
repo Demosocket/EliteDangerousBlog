@@ -47,8 +47,8 @@
 - ~~CRUD operations Comments with permits (4)~~
 - ~~Comments pagination (2)~~
 
-### Stage 5 (total: ):
+### ~~Stage 5 (total: 10):~~
 - ~~Counting Tags (2)~~
 - ~~Add tags to new article (2)~~
 - ~~Add tags edited article (2)~~
--
+- ~~Sort articles by tags (4)~~
