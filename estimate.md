@@ -54,4 +54,5 @@
 - ~~Sort articles by tags (4)~~
 
 ### Stage 6 (total: ):
-- Docker (15)
+- ~~Docker (15)~~
+- ~~Pagination(comments) find by user (1)~~

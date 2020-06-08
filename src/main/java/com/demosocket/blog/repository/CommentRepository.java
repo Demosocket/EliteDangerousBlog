@@ -13,5 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     Page<Comment> findAllByUserAndArticle(User user, Article article, Pageable pageable);
 
+    Page<Comment> findAllByArticle(Article article, Pageable pageable);
+
     Optional<Comment> findByArticleAndId(Article article, Integer id);
 }

@@ -39,12 +39,13 @@ public class CommentController {
     public ResponseEntity<Page<Comment>> allCommentsFromArticle(@PathVariable Integer articleId,
                                                                 @RequestParam("skip") Integer page,
                                                                 @RequestParam("limit") Integer size,
-                                                                @RequestParam("author") Integer userId,
+                                                                @RequestParam(value = "author", required = false)
+                                                                            Integer userId,
                                                                 @RequestParam("sort") String field,
                                                                 @RequestParam("order") String order) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
-        Page<Comment> commentList = commentService.findAllCommentsFromArticle(articleId, userId, pageable);
-        return new ResponseEntity<>(commentList, HttpStatus.OK);
+        Page<Comment> commentPage = commentService.findAllCommentsFromArticle(articleId, userId, pageable);
+        return new ResponseEntity<>(commentPage, HttpStatus.OK);
     }
 
     @GetMapping("/{articleId}/comments/{commentId}")

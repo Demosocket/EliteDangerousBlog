@@ -13,8 +13,8 @@ import com.demosocket.blog.exception.CommentNotFoundException;
 import com.demosocket.blog.exception.ArticleNotFoundException;
 import com.demosocket.blog.exception.PermissionDeniedCommentAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -63,8 +63,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<Comment> findAllCommentsFromArticle(Integer articleId, Integer userId, Pageable pageable) {
         Article article = articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
-        return commentRepository.findAllByUserAndArticle(user, article, pageable);
+        Page<Comment> commentPage;
+//        if @RequestParam("userId") == 'null' then we should find all articles
+        if (userId == null) {
+            commentPage = commentRepository.findAllByArticle(article, pageable);
+        } else {
+            User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            commentPage = commentRepository.findAllByUserAndArticle(user, article, pageable);
+        }
+        return commentPage;
     }
 }
