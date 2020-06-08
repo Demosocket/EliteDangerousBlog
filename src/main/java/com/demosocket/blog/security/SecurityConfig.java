@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers("/authenticate", "/auth/**").permitAll()
+                .authorizeRequests().antMatchers("/authenticate", "/auth/**", "/articles/**").permitAll()
 //                all other requests need to be authenticated
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
