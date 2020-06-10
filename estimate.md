@@ -59,4 +59,5 @@
 
 ### Stage 7 (total: )
 - ~~Docker-compose and Criteria (12)~~
+- ~~Change date to timestampz (2)~~
 -

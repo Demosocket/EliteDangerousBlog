@@ -32,4 +32,3 @@ public abstract class Article_ {
 	public static final String TAGS = "tags";
 
 }
-

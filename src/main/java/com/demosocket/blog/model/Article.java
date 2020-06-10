@@ -2,7 +2,6 @@ package com.demosocket.blog.model;
 
 import lombok.*;
 import com.fasterxml.jackson.annotation.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Set;
 import java.util.Date;
@@ -43,15 +42,13 @@ public class Article {
     private User user;
 
     @JsonProperty("created_at")
-    @Column(name = "created_at")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 
     @JsonProperty("updated_at")
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @Column(name = "updated_at", insertable = false)
     private Date updatedAt;
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

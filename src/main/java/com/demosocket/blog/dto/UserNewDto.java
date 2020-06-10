@@ -1,12 +1,12 @@
 package com.demosocket.blog.dto;
 
 import lombok.Data;
+import lombok.Builder;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.UserRole;
 
-import java.util.Date;
-
 @Data
+@Builder
 public class UserNewDto {
 
     private String firstName;
@@ -20,7 +20,6 @@ public class UserNewDto {
                 .lastName(lastName)
                 .email(email)
                 .hashPassword(password)
-                .createdAt(new Date())
                 .userRole(UserRole.USER)
                 .enabled(false)
                 .build();

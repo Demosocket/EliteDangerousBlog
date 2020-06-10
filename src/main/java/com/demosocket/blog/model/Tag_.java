@@ -18,4 +18,3 @@ public abstract class Tag_ {
 	public static final String ARTICLES = "articles";
 
 }
-

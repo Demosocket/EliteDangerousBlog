@@ -5,7 +5,6 @@ import com.demosocket.blog.model.Status;
 import com.demosocket.blog.model.Article;
 
 import java.util.Set;
-import java.util.Date;
 
 @Data
 public class ArticleNewDto {
@@ -20,8 +19,6 @@ public class ArticleNewDto {
                 .title(title)
                 .text(text)
                 .status(status)
-                .createdAt(new Date())
-                .updatedAt(new Date())
                 .build();
     }
 }

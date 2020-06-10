@@ -1,7 +1,8 @@
 package com.demosocket.blog.model;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 import java.util.List;
@@ -34,9 +35,9 @@ public class User {
     @Column(name = "hash_password")
     private String hashPassword;
 
-    @Column(name = "created_at")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @CreatedDate
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 
     @Column(name = "user_role")

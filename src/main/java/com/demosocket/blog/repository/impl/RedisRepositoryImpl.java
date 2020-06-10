@@ -3,6 +3,7 @@ package com.demosocket.blog.repository.impl;
 import org.springframework.stereotype.Repository;
 import com.demosocket.blog.repository.RedisRepository;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
     public RedisRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
