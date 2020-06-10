@@ -17,9 +17,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: elite_blog
-      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./pg_data:/var/lib/postgresql/data/pgdata
+      - ./psql:/docker-entrypoint-initdb.d
     restart: always
     expose:
       - 5432

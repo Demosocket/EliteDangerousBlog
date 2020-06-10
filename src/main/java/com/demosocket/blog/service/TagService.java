@@ -1,8 +1,10 @@
 package com.demosocket.blog.service;
 
-import java.util.Map;
+import com.demosocket.blog.dto.TagsCountDto;
+
+import java.util.List;
 
 public interface TagService {
 
-    Map<String, Integer> countArticlesWithTag();
+    List<TagsCountDto> countArticlesWithTag();
 }

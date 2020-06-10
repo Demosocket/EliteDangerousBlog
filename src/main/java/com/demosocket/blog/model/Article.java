@@ -11,11 +11,12 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"comments", "user", "tags"})
+
+@Entity
 @Table(name = "articles")
 public class Article {
 

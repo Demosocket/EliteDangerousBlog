@@ -17,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.demosocket.blog.security.SecurityConstants.*;
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -33,17 +35,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final String requestTokenHeader = request.getHeader("Authorization");
+        final String requestTokenHeader = request.getHeader(HEADER_STRING);
         String email = null;
         String jwtToken = null;
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+        if (requestTokenHeader != null && requestTokenHeader.startsWith(TOKEN_PREFIX)) {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 email = jwtTokenUtil.getEmailFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                System.out.println(MESSAGE_CANT_GET_TOKEN);
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                System.out.println(MESSAGE_TOKEN_HAS_EXPIRED);
             }
         }
 

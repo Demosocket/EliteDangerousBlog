@@ -1,18 +1,19 @@
 package com.demosocket.blog.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Set;
 import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"articles"})
+
+@Entity
 @Table(name = "tags")
 public class Tag {
 

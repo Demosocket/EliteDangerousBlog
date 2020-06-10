@@ -26,9 +26,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.demosocket.blog.model.User user = userRepository
                 .findByEmail(username).orElseThrow(UserNotFoundException::new);
-        if (user == null) {
-            throw new UsernameNotFoundException("User with email " + username + " not found");
-        }
 
         return new User(
                 user.getEmail(),

@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String EMAIL;
+
+    private final JavaMailSender javaMailSender;
 
     @Autowired
     public EmailServiceImpl(JavaMailSender javaMailSender) {

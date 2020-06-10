@@ -1,9 +1,6 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.Tag;
-import com.demosocket.blog.model.User;
-import com.demosocket.blog.model.Status;
-import com.demosocket.blog.model.Article;
+import com.demosocket.blog.model.*;
 import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
 import com.demosocket.blog.service.ArticleService;
@@ -11,7 +8,6 @@ import com.demosocket.blog.dto.SearchParametersDto;
 import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.repository.ArticleRepository;
-import com.demosocket.blog.exception.TagNotFoundException;
 import com.demosocket.blog.exception.UserNotFoundException;
 import com.demosocket.blog.exception.ArticleNotFoundException;
 import com.demosocket.blog.exception.PermissionDeniedArticleAccessException;
@@ -20,19 +16,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import javax.persistence.criteria.*;
+import javax.persistence.EntityManager;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    private final EntityManager entityManager;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
 
     @Autowired
-    public ArticleServiceImpl(TagRepository tagRepository,
+    public ArticleServiceImpl(EntityManager entityManager,
+                              TagRepository tagRepository,
                               UserRepository userRepository,
                               ArticleRepository articleRepository) {
+        this.entityManager = entityManager;
         this.tagRepository = tagRepository;
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
@@ -41,12 +41,63 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<Article> findAllPublic(SearchParametersDto params) {
 
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Article> criteriaQuery = cb.createQuery(Article.class);
+        Root<Article> articleRoot = criteriaQuery.from(Article.class);
+        Predicate criteria = cb.conjunction();
+
+//        article status
+        Predicate predicateStatus = cb.equal(articleRoot.get(Article_.status), Status.PUBLIC);
+        criteria = cb.and(criteria, predicateStatus);
+
+//        find by tags
+        if (params.getTags()!=null) {
+            Join<Article, Tag> tagJoin = articleRoot.join(Article_.tags);
+            Expression<String> tagExpression = tagJoin.get(Tag_.name.getName());
+            Predicate predicateTag = tagExpression.in(params.getTags());
+            criteria = cb.and(criteria, predicateTag);
+        }
+
+//        find by title
+        if (params.getTitle()!=null) {
+            Predicate predicateTitle = cb.equal(articleRoot.get(Article_.title), params.getTitle());
+            criteria = cb.and(criteria, predicateTitle);
+        }
+
+//        find by user
+        if (params.getUserId()!=null) {
+            Predicate predicateUser = cb.equal(articleRoot.get(Article_.user),
+                    userRepository.findById(params.getUserId()).orElseThrow(UserNotFoundException::new));
+            criteria = cb.and(criteria, predicateUser);
+        }
+
+//        sort
+        if (Sort.Direction.fromString(params.getOrder()).isAscending()) {
+            criteriaQuery.orderBy(cb.asc(articleRoot.get(params.getSortField())));
+        } else {
+            criteriaQuery.orderBy(cb.desc(articleRoot.get(params.getSortField())));
+        }
+
+        criteriaQuery.select(articleRoot).where(criteria);
+        List<Article> articleList = entityManager.createQuery(criteriaQuery).getResultList();
+
+//        pagination
+        int start = params.getPage() * params.getSize();
+        int end = Math.min((start + params.getSize()), articleList.size());
+
+//        copy the articleList into resultList by page
+        List<Article> resultList = new ArrayList<>();
+        if (start <= end) {
+            resultList = articleList.subList(start, end);
+        }
+/*
+//        Without criteria
+        List<Article> articleList = articleRepository.find(Status.PUBLIC, params.getTitle(), params.getUserId());
         Set<Article> articleSet = new HashSet<>();
 //        if @RequestParam("tags") is 'null' then we should find with all tags
         if (params.getTags() == null) {
             params.setTags(tagRepository.findAll().stream().map(Tag::getName).collect(Collectors.toList()));
         }
-
         if (params.getUserId() != null) {
 //            if @RequestParam("tags") != 'null' then we should find by user
             User user = userRepository.findById(params.getUserId()).orElseThrow(UserNotFoundException::new);
@@ -76,9 +127,7 @@ public class ArticleServiceImpl implements ArticleService {
 //        pagination
         int start = params.getPage() * params.getSize();
         int end = Math.min((start + params.getSize()), articleSet.size());
-
         List<Article> articleList = new ArrayList<>(articleSet);
-
 //        sort by 'field' with 'order'
         switch (params.getSortField()) {
             case "id":
@@ -122,9 +171,11 @@ public class ArticleServiceImpl implements ArticleService {
         if (start <= end) {
             resultList = articleList.subList(start, end);
         }
+ */
 //        'PageImpl' work with 'Pageable' but it's fiction
         Pageable pageable = PageRequest.of(params.getPage(), params.getSize(),
                 Sort.Direction.fromString(params.getOrder()), params.getSortField());
+
         return new PageImpl<>(resultList, pageable, articleList.size());
     }
 

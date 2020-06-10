@@ -14,11 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
+
+    public static final String AUTHORIZATION = "Authorization";
 
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -34,8 +35,9 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addArticle(@RequestBody ArticleNewDto articleNewDto, HttpServletRequest request) {
-        final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
+    public ResponseEntity<?> addArticle(@RequestBody ArticleNewDto articleNewDto,
+                                        @RequestHeader(AUTHORIZATION) String token) {
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.saveArticle(articleNewDto, email);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -61,18 +63,17 @@ public class ArticleController {
                 .sortField(field)
                 .order(order)
                 .build();
-        Page<Article> articlePage = articleService.findAllPublic(params);
 
-        return new ResponseEntity<>(articlePage, HttpStatus.OK);
+        return new ResponseEntity<>(articleService.findAllPublic(params), HttpStatus.OK);
     }
 
     @GetMapping("/my")
-    public ResponseEntity<Page<Article>> getYourOwnArticles(HttpServletRequest request,
+    public ResponseEntity<Page<Article>> getYourOwnArticles(@RequestHeader(AUTHORIZATION) String token,
                                                             @RequestParam("skip") Integer page,
                                                             @RequestParam("limit") Integer size,
                                                             @RequestParam("sort") String field,
                                                             @RequestParam("order") String order) {
-        final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
         Page<Article> articlePage = articleService.findAllByUser(userService.findByEmail(email), pageable);
 
@@ -81,17 +82,18 @@ public class ArticleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editYourOwnArticle(@PathVariable Integer id,
-                                                HttpServletRequest request,
+                                                @RequestHeader(AUTHORIZATION) String token,
                                                 @RequestBody ArticleEditDto articleEditDto) {
-        final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.checkAndEditArticle(id, email, articleEditDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteYourOwnArticle(@PathVariable Integer id, HttpServletRequest request) {
-        final String email = jwtTokenUtil.getEmailFromToken(request.getHeader("Authorization").substring(7));
+    public ResponseEntity<?> deleteYourOwnArticle(@PathVariable Integer id,
+                                                  @RequestHeader(AUTHORIZATION) String token) {
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.checkAndDeleteArticle(id, email);
 
         return new ResponseEntity<>(HttpStatus.OK);

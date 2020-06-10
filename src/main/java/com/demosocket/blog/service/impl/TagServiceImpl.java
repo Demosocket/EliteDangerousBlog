@@ -1,13 +1,13 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.Tag;
+import com.demosocket.blog.dto.TagsCountDto;
 import com.demosocket.blog.service.TagService;
 import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +23,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Map<String, Integer> countArticlesWithTag() {
-        return tagRepository.findAll().stream()
-                .collect(Collectors.toMap(Tag::getName, tag -> articleRepository.findAllByTags(tag).size()));
+    public List<TagsCountDto> countArticlesWithTag() {
+        return tagRepository.findAll().stream().map(tag -> new TagsCountDto(tag.getName(),
+                        articleRepository.findAllByTags(tag).size())).collect(Collectors.toList());
     }
 }

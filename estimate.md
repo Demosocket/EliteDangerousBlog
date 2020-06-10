@@ -53,6 +53,10 @@
 - ~~Add tags edited article (2)~~
 - ~~Sort articles by tags (4)~~
 
-### Stage 6 (total: ):
+### Stage 6 (total: 16):
 - ~~Docker (15)~~
 - ~~Pagination(comments) find by user (1)~~
+
+### Stage 7 (total: )
+- ~~Docker-compose and Criteria (12)~~
+-

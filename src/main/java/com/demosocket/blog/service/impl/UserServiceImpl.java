@@ -21,10 +21,10 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    public static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
-    public static final String URL_RESTORE_PASSWORD = "";
-    public static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
-    public static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
+    private static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
+    private static final String URL_RESTORE_PASSWORD = "";
+    private static final String REDIS_KEY_FOR_HASH_CODE = "CONFIRM";
+    private static final String REDIS_KEY_FOR_RESTORE_CODE = "RESTORE";
 
     private final EmailService emailService;
     private final CodeGenerator codeGenerator;
@@ -80,12 +80,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void confirmEmail(String registrationHashCode) {
-        String email = (String) redisRepository.findAllCodes(REDIS_KEY_FOR_HASH_CODE).entrySet()
-                .stream()
-                .filter(entry -> registrationHashCode.equals(entry.getValue()))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow(InvalidCodeException::new);
+        String email = findEmailFromRedis(REDIS_KEY_FOR_HASH_CODE, registrationHashCode);
 //        activate user
         User notActiveUser = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         notActiveUser.setEnabled(true);
@@ -96,17 +91,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(UserResetPasswordDto userResetPasswordDto) {
-        String email = (String) redisRepository.findAllCodes(REDIS_KEY_FOR_RESTORE_CODE).entrySet()
-                .stream()
-                .filter(entry -> userResetPasswordDto.getCode().equals(entry.getValue()))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow(InvalidCodeException::new);
+        String email = findEmailFromRedis(REDIS_KEY_FOR_RESTORE_CODE, userResetPasswordDto.getCode());
 //        reset password for user
         User userWithOldPassword = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         userWithOldPassword.setHashPassword(passwordEncoder.encode(userResetPasswordDto.getPassword()));
         userRepository.save(userWithOldPassword);
 //        delete data from redisDb
         redisRepository.deleteCode(REDIS_KEY_FOR_RESTORE_CODE, email);
+    }
+
+    private String findEmailFromRedis(String key, String code) {
+        return (String) redisRepository.findAllCodes(key).entrySet()
+                .stream()
+                .filter(entry -> code.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElseThrow(InvalidCodeException::new);
     }
 }

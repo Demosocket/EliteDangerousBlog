@@ -9,5 +9,4 @@ public class EliteDangerousBlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(EliteDangerousBlogApplication.class, args);
     }
-
 }
