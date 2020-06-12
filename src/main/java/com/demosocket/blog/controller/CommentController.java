@@ -1,16 +1,16 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.model.Comment;
 import com.demosocket.blog.dto.CommentNewDto;
-import com.demosocket.blog.service.CommentService;
+import com.demosocket.blog.model.Comment;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.Sort;
+import com.demosocket.blog.service.CommentService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import static com.demosocket.blog.controller.ArticleController.AUTHORIZATION;
 
@@ -32,7 +32,6 @@ public class CommentController {
                                            @RequestHeader(AUTHORIZATION) String token) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         commentService.saveNewComment(commentNewDto, email, articleId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -46,7 +45,6 @@ public class CommentController {
                                                                 @RequestParam("order") String order) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
         Page<Comment> commentPage = commentService.findAllCommentsFromArticle(articleId, userId, pageable);
-
         return new ResponseEntity<>(commentPage, HttpStatus.OK);
     }
 
@@ -54,7 +52,6 @@ public class CommentController {
     public ResponseEntity<Comment> getCommentFromArticle(@PathVariable Integer articleId,
                                                          @PathVariable Integer commentId) {
         Comment comment = commentService.findComment(articleId, commentId);
-
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
@@ -64,7 +61,6 @@ public class CommentController {
                                                       @RequestHeader(AUTHORIZATION) String token) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         commentService.deleteComment(email, articleId, commentId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

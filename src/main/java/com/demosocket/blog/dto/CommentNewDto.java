@@ -1,7 +1,7 @@
 package com.demosocket.blog.dto;
 
-import lombok.Data;
 import com.demosocket.blog.model.Comment;
+import lombok.Data;
 
 @Data
 public class CommentNewDto {

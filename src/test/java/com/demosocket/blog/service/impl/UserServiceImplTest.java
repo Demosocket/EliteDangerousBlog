@@ -2,19 +2,22 @@ package com.demosocket.blog.service.impl;
 
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.UserRole;
-import com.demosocket.blog.service.UserService;
+import com.demosocket.blog.repository.RedisRepository;
 import com.demosocket.blog.repository.UserRepository;
+import com.demosocket.blog.service.EmailService;
+import com.demosocket.blog.service.UserService;
+import com.demosocket.blog.utils.CodeGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Date;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
+@SpringBootTest(classes = UserServiceImpl.class)
 class UserServiceImplTest {
 
     public static final String EMAIL = "email";
@@ -26,6 +29,18 @@ class UserServiceImplTest {
     @MockBean
     private UserRepository userRepository;
 
+    @MockBean
+    private EmailService emailService;
+
+    @MockBean
+    private CodeGenerator codeGenerator;
+
+    @MockBean
+    private RedisRepository redisRepository;
+
+    @MockBean
+    private BCryptPasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void prepareTestData() {
         testUser = User.builder()
@@ -34,32 +49,31 @@ class UserServiceImplTest {
                 .lastName("Evergarden")
                 .email(EMAIL)
                 .hashPassword("pass")
-                .createdAt(new Date())
                 .userRole(UserRole.USER)
-                .enabled(false)
+//                .enabled(false)
                 .build();
     }
 
     @Test
     void shouldFindUserByEmail() {
-        Mockito.when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
+        given(userService.findByEmail(EMAIL)).willReturn(testUser);
         assertEquals(testUser, userService.findByEmail(EMAIL));
     }
 
     @Test
     public void shouldReturnNullWhenEmailNotExists() {
-        Mockito.when(userService.findByEmail(testUser.getEmail())).thenReturn(testUser);
-        assertNull(userService.findByEmail("EMAIL"));
+        given(userService.findByEmail(anyString())).willReturn(null);
+        assertNull(userService.findByEmail(anyString()));
     }
 
 //    @Test
 //    void registerNewUser() {
 //        UserNewDto userNewDto = UserNewDto.builder().email(EMAIL).firstName("Violet")
 //                .lastName("Evergarden").password("pass").build();
-//        Mockito.when(userService.registerNewUser(userNewDto)).thenAnswer();
-//        Mockito.when(userRepository.save(testUser));
+//        userRepository.save(userNewDto.toEntity());
+//        when
 //    }
-//
+
 //    @Test
 //    void activateUser() {
 //

@@ -1,14 +1,17 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.model.Article;
-import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
-import com.demosocket.blog.service.UserService;
-import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.SearchParametersDto;
+import com.demosocket.blog.model.Article;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
+import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +42,6 @@ public class ArticleController {
                                         @RequestHeader(AUTHORIZATION) String token) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.saveArticle(articleNewDto, email);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -63,7 +65,6 @@ public class ArticleController {
                 .sortField(field)
                 .order(order)
                 .build();
-
         return new ResponseEntity<>(articleService.findAllPublic(params), HttpStatus.OK);
     }
 
@@ -76,7 +77,6 @@ public class ArticleController {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
         Page<Article> articlePage = articleService.findAllByUser(userService.findByEmail(email), pageable);
-
         return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }
 
@@ -86,7 +86,6 @@ public class ArticleController {
                                                 @RequestBody ArticleEditDto articleEditDto) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.checkAndEditArticle(id, email, articleEditDto);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -95,7 +94,6 @@ public class ArticleController {
                                                   @RequestHeader(AUTHORIZATION) String token) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.checkAndDeleteArticle(id, email);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

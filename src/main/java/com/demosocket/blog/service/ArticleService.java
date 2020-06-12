@@ -1,12 +1,12 @@
 package com.demosocket.blog.service;
 
-import com.demosocket.blog.model.User;
-import com.demosocket.blog.model.Article;
-import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
+import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.SearchParametersDto;
-import org.springframework.data.domain.Pageable;
+import com.demosocket.blog.model.Article;
+import com.demosocket.blog.model.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
 

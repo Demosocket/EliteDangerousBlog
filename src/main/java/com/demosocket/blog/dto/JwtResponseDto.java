@@ -1,7 +1,7 @@
 package com.demosocket.blog.dto;
 
-import lombok.Getter;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor

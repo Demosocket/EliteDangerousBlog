@@ -1,7 +1,7 @@
 package com.demosocket.blog.dto;
 
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 

@@ -1,8 +1,9 @@
 package com.demosocket.blog.service;
 
-import com.demosocket.blog.model.User;
+import com.demosocket.blog.dto.UserEmailDto;
 import com.demosocket.blog.dto.UserNewDto;
 import com.demosocket.blog.dto.UserResetPasswordDto;
+import com.demosocket.blog.model.User;
 
 public interface UserService {
 
@@ -13,6 +14,8 @@ public interface UserService {
     void confirmEmail(String token);
 
     void sendRestoreEmail(String email);
+
+    void sendAgain(UserEmailDto userEmailDto);
 
     void registerNewUser(UserNewDto userNewDto);
 

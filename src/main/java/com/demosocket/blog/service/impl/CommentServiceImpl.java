@@ -1,20 +1,20 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.User;
+import com.demosocket.blog.dto.CommentNewDto;
+import com.demosocket.blog.exception.ArticleNotFoundException;
+import com.demosocket.blog.exception.CommentNotFoundException;
+import com.demosocket.blog.exception.PermissionDeniedCommentAccessException;
+import com.demosocket.blog.exception.UserNotFoundException;
 import com.demosocket.blog.model.Article;
 import com.demosocket.blog.model.Comment;
-import com.demosocket.blog.dto.CommentNewDto;
-import com.demosocket.blog.service.CommentService;
-import com.demosocket.blog.repository.UserRepository;
-import com.demosocket.blog.repository.CommentRepository;
+import com.demosocket.blog.model.User;
 import com.demosocket.blog.repository.ArticleRepository;
-import com.demosocket.blog.exception.UserNotFoundException;
-import com.demosocket.blog.exception.CommentNotFoundException;
-import com.demosocket.blog.exception.ArticleNotFoundException;
-import com.demosocket.blog.exception.PermissionDeniedCommentAccessException;
+import com.demosocket.blog.repository.CommentRepository;
+import com.demosocket.blog.repository.UserRepository;
+import com.demosocket.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,7 +56,6 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentNewDto.toEntity();
         comment.setUser(userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new));
         comment.setArticle(articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new));
-
         commentRepository.save(comment);
     }
 

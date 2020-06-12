@@ -1,10 +1,10 @@
 package com.demosocket.blog.model;
 
-import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
-import java.util.Set;
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter

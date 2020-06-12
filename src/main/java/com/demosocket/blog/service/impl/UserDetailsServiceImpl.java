@@ -1,14 +1,14 @@
 package com.demosocket.blog.service.impl;
 
-import org.springframework.stereotype.Service;
-import com.demosocket.blog.repository.UserRepository;
-import org.springframework.security.core.userdetails.User;
 import com.demosocket.blog.exception.UserNotFoundException;
+import com.demosocket.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
@@ -26,7 +26,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.demosocket.blog.model.User user = userRepository
                 .findByEmail(username).orElseThrow(UserNotFoundException::new);
-
         return new User(
                 user.getEmail(),
                 user.getHashPassword(),

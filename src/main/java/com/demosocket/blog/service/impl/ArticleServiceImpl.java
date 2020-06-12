@@ -1,19 +1,19 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.*;
-import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.ArticleEditDto;
-import com.demosocket.blog.service.ArticleService;
+import com.demosocket.blog.dto.ArticleNewDto;
 import com.demosocket.blog.dto.SearchParametersDto;
-import com.demosocket.blog.repository.TagRepository;
-import com.demosocket.blog.repository.UserRepository;
-import com.demosocket.blog.repository.ArticleRepository;
-import com.demosocket.blog.exception.UserNotFoundException;
 import com.demosocket.blog.exception.ArticleNotFoundException;
 import com.demosocket.blog.exception.PermissionDeniedArticleAccessException;
+import com.demosocket.blog.exception.UserNotFoundException;
+import com.demosocket.blog.model.*;
+import com.demosocket.blog.repository.ArticleRepository;
+import com.demosocket.blog.repository.TagRepository;
+import com.demosocket.blog.repository.UserRepository;
+import com.demosocket.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import javax.persistence.criteria.*;
@@ -40,7 +40,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Page<Article> findAllPublic(SearchParametersDto params) {
-
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Article> criteriaQuery = cb.createQuery(Article.class);
         Root<Article> articleRoot = criteriaQuery.from(Article.class);
@@ -94,7 +93,6 @@ public class ArticleServiceImpl implements ArticleService {
 //        'PageImpl' work with 'Pageable'
         Pageable pageable = PageRequest.of(params.getPage(), params.getSize(),
                 Sort.Direction.fromString(params.getOrder()), params.getSortField());
-
         return new PageImpl<>(resultList, pageable, articleList.size());
     }
 

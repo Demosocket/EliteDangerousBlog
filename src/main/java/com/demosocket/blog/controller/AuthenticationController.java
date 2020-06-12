@@ -1,18 +1,20 @@
 package com.demosocket.blog.controller;
 
-import com.demosocket.blog.dto.UserAuthDto;
 import com.demosocket.blog.dto.JwtResponseDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.demosocket.blog.dto.UserAuthDto;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationController {
@@ -35,7 +37,6 @@ public class AuthenticationController {
         authenticate(userAuthDto.getEmail(), userAuthDto.getPassword());
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userAuthDto.getEmail());
         final String token = jwtTokenUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(new JwtResponseDto(token));
     }
 

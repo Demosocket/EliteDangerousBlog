@@ -1,12 +1,12 @@
 package com.demosocket.blog.model;
 
-import lombok.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 @Getter
 @Setter

@@ -1,8 +1,8 @@
 package com.demosocket.blog.service;
 
+import com.demosocket.blog.dto.CommentNewDto;
 import com.demosocket.blog.model.Comment;
 import org.springframework.data.domain.Page;
-import com.demosocket.blog.dto.CommentNewDto;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {

@@ -1,9 +1,9 @@
 package com.demosocket.blog.dto;
 
-import lombok.Data;
-import lombok.Builder;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.model.UserRole;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder

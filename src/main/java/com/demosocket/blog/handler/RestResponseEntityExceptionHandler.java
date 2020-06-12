@@ -1,12 +1,12 @@
 package com.demosocket.blog.handler;
 
 import com.demosocket.blog.exception.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -21,6 +21,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(UserAlreadyExist.class)
     public ResponseEntity<?> handleUserAlreadyExist(final UserAlreadyExist e, final WebRequest request) {
         final String bodyOfResponse = "User with such email already exist";
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(UserAlreadyEnabledException.class)
+    public ResponseEntity<?> handleUserAlreadyEnabled(final UserAlreadyEnabledException e, final WebRequest request) {
+        final String bodyOfResponse = "User with such email already enabled";
         return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 

@@ -1,16 +1,18 @@
 package com.demosocket.blog.service.impl;
 
-import com.demosocket.blog.model.User;
+import com.demosocket.blog.dto.UserEmailDto;
 import com.demosocket.blog.dto.UserNewDto;
+import com.demosocket.blog.dto.UserResetPasswordDto;
+import com.demosocket.blog.exception.InvalidCodeException;
+import com.demosocket.blog.exception.UserAlreadyEnabledException;
+import com.demosocket.blog.exception.UserAlreadyExist;
+import com.demosocket.blog.exception.UserNotFoundException;
+import com.demosocket.blog.model.User;
+import com.demosocket.blog.repository.RedisRepository;
+import com.demosocket.blog.repository.UserRepository;
+import com.demosocket.blog.service.EmailService;
 import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.utils.CodeGenerator;
-import com.demosocket.blog.service.EmailService;
-import com.demosocket.blog.dto.UserResetPasswordDto;
-import com.demosocket.blog.repository.UserRepository;
-import com.demosocket.blog.repository.RedisRepository;
-import com.demosocket.blog.exception.UserAlreadyExist;
-import com.demosocket.blog.exception.InvalidCodeException;
-import com.demosocket.blog.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,16 @@ public class UserServiceImpl implements UserService {
         userNewDto.setPassword(passwordEncoder.encode(userNewDto.getPassword()));
         userRepository.save(userNewDto.toEntity());
         activateUser(userNewDto.getEmail());
+    }
+
+    @Override
+    public void sendAgain(UserEmailDto userEmailDto) {
+//        check if user already enabled
+        User userFromDb = userRepository.findByEmail(userEmailDto.getEmail()).orElseThrow(UserNotFoundException::new);
+        if (userFromDb.isEnabled()) {
+            throw new UserAlreadyEnabledException();
+        }
+        activateUser(userEmailDto.getEmail());
     }
 
     @Override
