@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 public class RegistrationController {
@@ -21,13 +23,13 @@ public class RegistrationController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity<?> signUp(@RequestBody UserNewDto userNewDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody UserNewDto userNewDto) {
         userService.registerNewUser(userNewDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/send_again")
-    public ResponseEntity<?> sendAgain(@RequestBody UserEmailDto userEmailDto) {
+    public ResponseEntity<?> sendAgain(@Valid @RequestBody UserEmailDto userEmailDto) {
         userService.sendAgain(userEmailDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -39,13 +41,13 @@ public class RegistrationController {
     }
 
     @PostMapping("/forgot_password")
-    public ResponseEntity<?> forgotPassword(@RequestBody UserEmailDto userEmailDto) {
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody UserEmailDto userEmailDto) {
         userService.sendRestoreEmail(userEmailDto.getEmail());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<?> resetPassword(@RequestBody UserResetPasswordDto userResetPasswordDto) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody UserResetPasswordDto userResetPasswordDto) {
         userService.resetPassword(userResetPasswordDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

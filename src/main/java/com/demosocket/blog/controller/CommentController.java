@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.demosocket.blog.controller.ArticleController.AUTHORIZATION;
 
 @RestController
@@ -28,8 +30,8 @@ public class CommentController {
 
     @PostMapping("/{articleId}/comments")
     public ResponseEntity<?> addNewComment(@PathVariable Integer articleId,
-                                           @RequestBody CommentNewDto commentNewDto,
-                                           @RequestHeader(AUTHORIZATION) String token) {
+                                           @RequestHeader(AUTHORIZATION) String token,
+                                           @Valid @RequestBody CommentNewDto commentNewDto) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         commentService.saveNewComment(commentNewDto, email, articleId);
         return new ResponseEntity<>(HttpStatus.OK);

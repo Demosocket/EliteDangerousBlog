@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,8 +39,8 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addArticle(@RequestBody ArticleNewDto articleNewDto,
-                                        @RequestHeader(AUTHORIZATION) String token) {
+    public ResponseEntity<?> addArticle(@RequestHeader(AUTHORIZATION) String token,
+                                        @Valid @RequestBody ArticleNewDto articleNewDto) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.saveArticle(articleNewDto, email);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -83,7 +84,7 @@ public class ArticleController {
     @PutMapping("/{id}")
     public ResponseEntity<?> editYourOwnArticle(@PathVariable Integer id,
                                                 @RequestHeader(AUTHORIZATION) String token,
-                                                @RequestBody ArticleEditDto articleEditDto) {
+                                                @Valid @RequestBody ArticleEditDto articleEditDto) {
         final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         articleService.checkAndEditArticle(id, email, articleEditDto);
         return new ResponseEntity<>(HttpStatus.OK);

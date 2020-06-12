@@ -1,7 +1,7 @@
 package com.demosocket.blog.service.impl;
 
+import com.demosocket.blog.exception.UserNotFoundException;
 import com.demosocket.blog.model.User;
-import com.demosocket.blog.model.UserRole;
 import com.demosocket.blog.repository.RedisRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.service.EmailService;
@@ -41,35 +41,23 @@ class UserServiceImplTest {
     @MockBean
     private BCryptPasswordEncoder passwordEncoder;
 
-    @BeforeEach
-    public void prepareTestData() {
-        testUser = User.builder()
-                .id(1)
-                .firstName("Violet")
-                .lastName("Evergarden")
-                .email(EMAIL)
-                .hashPassword("pass")
-                .userRole(UserRole.USER)
-//                .enabled(false)
-                .build();
-    }
-
     @Test
     void shouldFindUserByEmail() {
+        User testUser = User.builder().email(EMAIL).build();
         given(userService.findByEmail(EMAIL)).willReturn(testUser);
         assertEquals(testUser, userService.findByEmail(EMAIL));
     }
 
     @Test
-    public void shouldReturnNullWhenEmailNotExists() {
-        given(userService.findByEmail(anyString())).willReturn(null);
-        assertNull(userService.findByEmail(anyString()));
+    public void shouldThrowExceptionWhenEmailNotExists() {
+        given(userService.findByEmail(anyString())).willThrow(new UserNotFoundException());
+        assertThrows(UserNotFoundException.class, () -> userService.findByEmail(anyString()));
     }
 
 //    @Test
 //    void registerNewUser() {
 //        UserNewDto userNewDto = UserNewDto.builder().email(EMAIL).firstName("Violet")
-//                .lastName("Evergarden").password("pass").build();
+//                .lastName("Evergarden").password("password").build();
 //        userRepository.save(userNewDto.toEntity());
 //        when
 //    }
