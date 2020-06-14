@@ -36,7 +36,7 @@ public class User {
     private String hashPassword;
 
     @CreatedDate
-    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 

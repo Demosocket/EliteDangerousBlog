@@ -25,6 +25,6 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<TagsCountDto> countArticlesWithTag() {
         return tagRepository.findAll().stream().map(tag -> new TagsCountDto(tag.getName(),
-                        articleRepository.findAllByTags(tag).size())).collect(Collectors.toList());
+                articleRepository.findAllByTags(tag).size())).collect(Collectors.toList());
     }
 }

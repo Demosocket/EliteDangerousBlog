@@ -48,13 +48,13 @@ public class ArticleController {
 
     @GetMapping()
     public ResponseEntity<Page<Article>> getAllPublicArticles(@RequestParam(value = "tags", required = false)
-                                                                          List<String> tags,
+                                                                      List<String> tags,
                                                               @RequestParam("skip") Integer page,
                                                               @RequestParam("limit") Integer size,
                                                               @RequestParam(value = "q", required = false)
-                                                                          String title,
+                                                                      String title,
                                                               @RequestParam(value = "author", required = false)
-                                                                          Integer userId,
+                                                                      Integer userId,
                                                               @RequestParam("sort") String field,
                                                               @RequestParam("order") String order) {
         SearchParametersDto params = SearchParametersDto.builder()

@@ -40,7 +40,7 @@ public class Comment {
     private User user;
 
     @JsonProperty("created_at")
-    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 }

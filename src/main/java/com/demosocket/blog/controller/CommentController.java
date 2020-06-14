@@ -42,7 +42,7 @@ public class CommentController {
                                                                 @RequestParam("skip") Integer page,
                                                                 @RequestParam("limit") Integer size,
                                                                 @RequestParam(value = "author", required = false)
-                                                                            Integer userId,
+                                                                        Integer userId,
                                                                 @RequestParam("sort") String field,
                                                                 @RequestParam("order") String order) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);

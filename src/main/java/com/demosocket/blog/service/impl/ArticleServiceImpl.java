@@ -50,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
         criteria = cb.and(criteria, predicateStatus);
 
 //        find by tags
-        if (params.getTags()!=null) {
+        if (params.getTags() != null) {
             Join<Article, Tag> tagJoin = articleRoot.join(Article_.tags);
             Expression<String> tagExpression = tagJoin.get(Tag_.name.getName());
             Predicate predicateTag = tagExpression.in(params.getTags());
@@ -58,13 +58,13 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
 //        find by title
-        if (params.getTitle()!=null) {
+        if (params.getTitle() != null) {
             Predicate predicateTitle = cb.equal(articleRoot.get(Article_.title), params.getTitle());
             criteria = cb.and(criteria, predicateTitle);
         }
 
 //        find by user
-        if (params.getUserId()!=null) {
+        if (params.getUserId() != null) {
             Predicate predicateUser = cb.equal(articleRoot.get(Article_.user),
                     userRepository.findById(params.getUserId()).orElseThrow(UserNotFoundException::new));
             criteria = cb.and(criteria, predicateUser);

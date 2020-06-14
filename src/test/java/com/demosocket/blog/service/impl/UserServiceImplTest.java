@@ -9,21 +9,25 @@ import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.utils.CodeGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = UserServiceImpl.class)
 class UserServiceImplTest {
 
-    public static final String EMAIL = "email";
+    private static final String EMAIL = "email";
     private static User testUser;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     @MockBean
@@ -41,41 +45,20 @@ class UserServiceImplTest {
     @MockBean
     private BCryptPasswordEncoder passwordEncoder;
 
+    @BeforeEach
+    public void setUp() {
+        testUser = User.builder().email(EMAIL).build();
+    }
+
     @Test
     void shouldFindUserByEmail() {
-        User testUser = User.builder().email(EMAIL).build();
-        given(userService.findByEmail(EMAIL)).willReturn(testUser);
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(testUser));
         assertEquals(testUser, userService.findByEmail(EMAIL));
     }
 
     @Test
     public void shouldThrowExceptionWhenEmailNotExists() {
-        given(userService.findByEmail(anyString())).willThrow(new UserNotFoundException());
+        given(userRepository.findByEmail(anyString())).willThrow(new UserNotFoundException());
         assertThrows(UserNotFoundException.class, () -> userService.findByEmail(anyString()));
     }
-
-//    @Test
-//    void registerNewUser() {
-//        UserNewDto userNewDto = UserNewDto.builder().email(EMAIL).firstName("Violet")
-//                .lastName("Evergarden").password("password").build();
-//        userRepository.save(userNewDto.toEntity());
-//        when
-//    }
-
-//    @Test
-//    void activateUser() {
-//
-//    }
-
-//    @Test
-//    void sendRestoreEmail() {
-//    }
-//
-//    @Test
-//    void confirmEmail() {
-//    }
-//
-//    @Test
-//    void resetPassword() {
-//    }
 }

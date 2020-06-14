@@ -42,12 +42,12 @@ public class Article {
     private User user;
 
     @JsonProperty("created_at")
-    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 
     @JsonProperty("updated_at")
-    @JsonFormat(pattern="dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
     @Column(name = "updated_at", insertable = false)
     private Date updatedAt;
 
@@ -62,6 +62,3 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
 }
-
-
-
