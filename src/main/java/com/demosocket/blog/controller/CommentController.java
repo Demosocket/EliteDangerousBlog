@@ -44,16 +44,20 @@ public class CommentController {
                                                                 @RequestParam(value = "author", required = false)
                                                                         Integer userId,
                                                                 @RequestParam("sort") String field,
-                                                                @RequestParam("order") String order) {
+                                                                @RequestParam("order") String order,
+                                                                @RequestHeader(AUTHORIZATION) String token) {
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(order), field);
-        Page<Comment> commentPage = commentService.findAllCommentsFromArticle(articleId, userId, pageable);
+        Page<Comment> commentPage = commentService.findAllCommentsFromArticle(email, articleId, userId, pageable);
         return new ResponseEntity<>(commentPage, HttpStatus.OK);
     }
 
     @GetMapping("/{articleId}/comments/{commentId}")
     public ResponseEntity<Comment> getCommentFromArticle(@PathVariable Integer articleId,
-                                                         @PathVariable Integer commentId) {
-        Comment comment = commentService.findComment(articleId, commentId);
+                                                         @PathVariable Integer commentId,
+                                                         @RequestHeader(AUTHORIZATION) String token) {
+        final String email = jwtTokenUtil.getEmailFromToken(token.substring(7));
+        Comment comment = commentService.findComment(email, articleId, commentId);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 

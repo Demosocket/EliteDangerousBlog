@@ -1,12 +1,10 @@
 package com.demosocket.blog.service.impl;
 
 import com.demosocket.blog.dto.CommentNewDto;
-import com.demosocket.blog.exception.ArticleNotFoundException;
-import com.demosocket.blog.exception.CommentNotFoundException;
-import com.demosocket.blog.exception.PermissionDeniedCommentAccessException;
-import com.demosocket.blog.exception.UserNotFoundException;
+import com.demosocket.blog.exception.*;
 import com.demosocket.blog.model.Article;
 import com.demosocket.blog.model.Comment;
+import com.demosocket.blog.model.Status;
 import com.demosocket.blog.model.User;
 import com.demosocket.blog.repository.ArticleRepository;
 import com.demosocket.blog.repository.CommentRepository;
@@ -34,9 +32,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findComment(Integer articleId, Integer commentId) {
+    public Comment findComment(String email, Integer articleId, Integer commentId) {
+        User userFinder = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         Article article = articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
-        return commentRepository.findByArticleAndId(article, commentId).orElseThrow(CommentNotFoundException::new);
+//        check if article hasn't PRIVATE Status
+        if (checkPermissions(article, userFinder)) {
+            return commentRepository.findByArticleAndId(article, commentId).orElseThrow(CommentNotFoundException::new);
+        } else {
+            throw new PermissionDeniedArticleAccessException();
+        }
     }
 
     @Override
@@ -54,22 +58,44 @@ public class CommentServiceImpl implements CommentService {
 
     public void saveNewComment(CommentNewDto commentNewDto, String email, Integer articleId) {
         Comment comment = commentNewDto.toEntity();
-        comment.setUser(userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new));
-        comment.setArticle(articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new));
-        commentRepository.save(comment);
+        User userWriter = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        comment.setUser(userWriter);
+        Article article = articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
+//        check if article hasn't PRIVATE Status
+        if (checkPermissions(article, userWriter)) {
+            comment.setArticle(articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new));
+            commentRepository.save(comment);
+        } else {
+            throw new PermissionDeniedArticleAccessException();
+        }
     }
 
     @Override
-    public Page<Comment> findAllCommentsFromArticle(Integer articleId, Integer userId, Pageable pageable) {
+    public Page<Comment> findAllCommentsFromArticle(String email, Integer articleId, Integer userId, Pageable pageable) {
+        User userFinder = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         Article article = articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
         Page<Comment> commentPage;
 //        if @RequestParam("userId") == 'null' then we should find all articles
         if (userId == null) {
-            commentPage = commentRepository.findAllByArticle(article, pageable);
+            if (checkPermissions(article, userFinder)) {
+                commentPage = commentRepository.findAllByArticle(article, pageable);
+            } else {
+                throw new PermissionDeniedArticleAccessException();
+            }
         } else {
-            User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            commentPage = commentRepository.findAllByUserAndArticle(user, article, pageable);
+            if (checkPermissions(article, userFinder)) {
+                User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+                commentPage = commentRepository.findAllByUserAndArticle(user, article, pageable);
+            } else {
+                throw new PermissionDeniedArticleAccessException();
+            }
         }
         return commentPage;
+    }
+
+    private boolean checkPermissions(Article article, User user) {
+//        user can comment public or own article
+        return article.getStatus().equals(Status.PUBLIC)
+                || (article.getStatus().equals(Status.PRIVATE) && article.getUser().equals(user));
     }
 }

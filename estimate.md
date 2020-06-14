@@ -57,8 +57,9 @@
 - ~~Docker (15)~~
 - ~~Pagination(comments) find by user (1)~~
 
-### Stage 7 (total: 17)
+### Stage 7 (total: 19)
 - ~~Docker-compose and Criteria (12)~~
 - ~~Change date to timestampz (2)~~
 - ~~Validation (2)~~
 - ~~Readme file and docker-blog (1)~~
+- ~~CommentService bugFix (2)~~

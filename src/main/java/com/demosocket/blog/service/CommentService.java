@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
-    Comment findComment(Integer articleId, Integer commentId);
+    Comment findComment(String email, Integer articleId, Integer commentId);
 
     void deleteComment(String email, Integer articleId, Integer commentId);
 
     void saveNewComment(CommentNewDto commentNewDto, String email, Integer articleId);
 
-    Page<Comment> findAllCommentsFromArticle(Integer articleId, Integer userId, Pageable pageable);
+    Page<Comment> findAllCommentsFromArticle(String email, Integer articleId, Integer userId, Pageable pageable);
 }
