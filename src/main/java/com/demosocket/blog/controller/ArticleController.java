@@ -7,6 +7,7 @@ import com.demosocket.blog.model.Article;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import com.demosocket.blog.service.ArticleService;
 import com.demosocket.blog.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/articles")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ArticleController {
 
     public static final String AUTHORIZATION = "Authorization";
@@ -28,15 +30,6 @@ public class ArticleController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final ArticleService articleService;
-
-    @Autowired
-    public ArticleController(UserService userService,
-                             JwtTokenUtil jwtTokenUtil,
-                             ArticleService articleService) {
-        this.userService = userService;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.articleService = articleService;
-    }
 
     @PostMapping()
     public ResponseEntity<?> addArticle(@RequestHeader(AUTHORIZATION) String token,

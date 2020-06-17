@@ -10,26 +10,19 @@ import com.demosocket.blog.repository.ArticleRepository;
 import com.demosocket.blog.repository.CommentRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CommentServiceImpl implements CommentService {
 
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
-
-    @Autowired
-    public CommentServiceImpl(UserRepository userRepository,
-                              ArticleRepository articleRepository,
-                              CommentRepository commentRepository) {
-        this.userRepository = userRepository;
-        this.articleRepository = articleRepository;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     public Comment findComment(String email, Integer articleId, Integer commentId) {

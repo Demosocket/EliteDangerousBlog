@@ -4,6 +4,8 @@ import com.demosocket.blog.dto.CommentNewDto;
 import com.demosocket.blog.model.Comment;
 import com.demosocket.blog.security.jwt.JwtTokenUtil;
 import com.demosocket.blog.service.CommentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +20,11 @@ import static com.demosocket.blog.controller.ArticleController.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/articles")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CommentController {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final CommentService commentService;
-
-    public CommentController(JwtTokenUtil jwtTokenUtil, CommentService commentService) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.commentService = commentService;
-    }
 
     @PostMapping("/{articleId}/comments")
     public ResponseEntity<?> addNewComment(@PathVariable Integer articleId,

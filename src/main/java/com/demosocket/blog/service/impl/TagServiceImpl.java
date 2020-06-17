@@ -4,6 +4,7 @@ import com.demosocket.blog.dto.TagsCountDto;
 import com.demosocket.blog.repository.ArticleRepository;
 import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.service.TagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,16 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final ArticleRepository articleRepository;
-
-    @Autowired
-    public TagServiceImpl(TagRepository tagRepository, ArticleRepository articleRepository) {
-        this.tagRepository = tagRepository;
-        this.articleRepository = articleRepository;
-    }
 
     @Override
     public List<TagsCountDto> countArticlesWithTag() {

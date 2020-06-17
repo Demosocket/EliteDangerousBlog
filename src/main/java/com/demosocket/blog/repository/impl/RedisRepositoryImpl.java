@@ -1,6 +1,7 @@
 package com.demosocket.blog.repository.impl;
 
 import com.demosocket.blog.repository.RedisRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,14 +10,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Repository
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class RedisRepositoryImpl implements RedisRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    public RedisRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     public void saveCode(String key, String email, String code) {

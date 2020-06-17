@@ -11,6 +11,7 @@ import com.demosocket.blog.repository.ArticleRepository;
 import com.demosocket.blog.repository.TagRepository;
 import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.service.ArticleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -20,23 +21,13 @@ import javax.persistence.criteria.*;
 import javax.persistence.EntityManager;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ArticleServiceImpl implements ArticleService {
 
     private final EntityManager entityManager;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
-
-    @Autowired
-    public ArticleServiceImpl(EntityManager entityManager,
-                              TagRepository tagRepository,
-                              UserRepository userRepository,
-                              ArticleRepository articleRepository) {
-        this.entityManager = entityManager;
-        this.tagRepository = tagRepository;
-        this.userRepository = userRepository;
-        this.articleRepository = articleRepository;
-    }
 
     @Override
     public Page<Article> findAllPublic(SearchParametersDto params) {

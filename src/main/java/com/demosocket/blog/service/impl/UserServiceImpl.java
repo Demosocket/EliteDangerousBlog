@@ -13,6 +13,7 @@ import com.demosocket.blog.repository.UserRepository;
 import com.demosocket.blog.service.EmailService;
 import com.demosocket.blog.service.UserService;
 import com.demosocket.blog.utils.CodeGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService {
 
     private static final String URL_CONFIRM_REGISTRATION = "http://localhost:8080/auth/confirm/";
@@ -33,19 +35,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisRepository redisRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(EmailService emailService,
-                           CodeGenerator codeGenerator,
-                           UserRepository userRepository,
-                           RedisRepository redisRepository,
-                           BCryptPasswordEncoder passwordEncoder) {
-        this.emailService = emailService;
-        this.codeGenerator = codeGenerator;
-        this.userRepository = userRepository;
-        this.redisRepository = redisRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public User findByEmail(String email) {

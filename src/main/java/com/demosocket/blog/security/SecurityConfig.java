@@ -2,6 +2,7 @@ package com.demosocket.blog.security;
 
 import com.demosocket.blog.security.jwt.JwtAuthenticationEntryPoint;
 import com.demosocket.blog.security.jwt.JwtRequestFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,18 +19,12 @@ import static com.demosocket.blog.security.SecurityConstants.*;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    @Autowired
-    public SecurityConfig(JwtRequestFilter jwtRequestFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.jwtRequestFilter = jwtRequestFilter;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
