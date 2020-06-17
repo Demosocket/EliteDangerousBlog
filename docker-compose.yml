@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  elite:
+    image: demosocket/elite-blog:v1
+    container_name: elite
+    links:
+      - postgresql
+      - redis
+    ports:
+      - "8080:8080"
+
+  postgresql:
+    image: library/postgres:12.2
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: elite_blog
+    volumes:
+      - ./psql:/docker-entrypoint-initdb.d
+    restart: always
+    expose:
+      - 5432
+
+  redis:
+    image: library/redis:latest
+    container_name: redis
+    restart: always
+    expose:
+      - 6379
