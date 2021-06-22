@@ -6,13 +6,13 @@ services:
     container_name: elite
     links:
       - postgresql
-      - redis
+      - redis2
     ports:
       - "8080:8080"
 
   postgresql:
-    image: library/postgres:12.2
-    container_name: postgres
+    image: library/postgres:latest
+    container_name: postgres2
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -23,9 +23,9 @@ services:
     expose:
       - 5432
 
-  redis:
+  redis2:
     image: library/redis:latest
-    container_name: redis
+    container_name: redis2
     restart: always
     expose:
       - 6379
