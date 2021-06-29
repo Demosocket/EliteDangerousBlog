@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "jwt.token.secret",
+      "type": "java.lang.String",
+      "description": "Secret phrase for token.",
+      "sourceType": "com.demosocket.blog.security.jwt.JwtProperties",
+      "defaultValue": "SuperSecretPhrase"
+    },
+    {
+      "name": "jwt.token.expiration",
+      "type": "java.lang.String",
+      "description": "Token expiration time, s.",
+      "sourceType": "com.demosocket.blog.security.jwt.JwtProperties",
+      "defaultValue": 3600
+    }
+  ]
+}
